@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class EscapeSettings : MonoBehaviour
 {
+    public GameObject target;
+    private bool isPressed = false;
+
     void Update()
     {
-        
-    }
-    
-    void EscapePress()
-    {
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPressed = !isPressed;
+            target.SetActive(isPressed);
+        }
     }
 }
