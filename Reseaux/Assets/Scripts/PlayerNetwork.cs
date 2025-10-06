@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerNetwork : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed = 10f;
-    
+    [SerializeField] private Mesh[] availableMeshes;
     private GameObject lastHitObject;
 
     private NetworkVariable<PlayerData> playerData = new(
@@ -65,27 +65,30 @@ public class PlayerNetwork : NetworkBehaviour
             transform.position += moveDir * moveSpeed * Time.deltaTime;
             transform.forward = moveDir;
         }
-        
-        Vector3 cameraForward = Camera.main.transform.forward; 
+        Vector3 cameraForward = Camera.main.transform.forward;
         Debug.DrawRay(Camera.main.transform.position, cameraForward * 7, Color.green);
-        if (Physics.Raycast( Camera.main.transform.position, cameraForward, out RaycastHit hit, 7))
+
+        if (Physics.Raycast(Camera.main.transform.position, cameraForward, out RaycastHit hit, 3))
         {
             if (hit.collider.CompareTag("ObjectToTransform"))
             {
                 GameObject hitObject = hit.collider.gameObject;
+
                 if (hitObject != lastHitObject)
                 {
                     if (lastHitObject != null)
-                    {
                         lastHitObject.GetComponent<Renderer>().material.color = Color.white;
-                    }
+
                     hitObject.GetComponent<Renderer>().material.color = Color.cyan;
                     lastHitObject = hitObject;
-
-                    Debug.Log("Touché : " + hitObject.name);
+                }
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    var hitNetworkObject = hit.collider.GetComponent<NetworkObject>();
+                    if (hitNetworkObject != null)
+                        ChangeMeshServerRpc(hitNetworkObject.NetworkObjectId);
                 }
             }
-            
         }
         else
         {
@@ -94,19 +97,34 @@ public class PlayerNetwork : NetworkBehaviour
                 lastHitObject.GetComponent<Renderer>().material.color = Color.white;
                 lastHitObject = null;
             }
-
-            Debug.Log("out");
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+    }
+    
+    [ServerRpc]
+    void ChangeMeshServerRpc(ulong targetId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out NetworkObject targetObject))
         {
-            TestRpc();
+            Mesh mesh = targetObject.GetComponent<MeshFilter>().mesh;
+            ApplyMesh(mesh);
+            ChangeMeshClientRpc(targetId);
         }
     }
 
-    [Rpc(SendTo.Server)]
-    void TestRpc()
+    [ClientRpc]
+    void ChangeMeshClientRpc(ulong targetId)
     {
-        Debug.Log("TestRpc");
+        if (!IsOwner && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out NetworkObject targetObject))
+        {
+            Mesh mesh = targetObject.GetComponent<MeshFilter>().mesh;
+            ApplyMesh(mesh);
+        }
+    }
+
+    private void ApplyMesh(Mesh mesh)
+    {
+        if (mesh != null)
+            GetComponentInChildren<MeshFilter>().mesh = mesh;
     }
 }
 
