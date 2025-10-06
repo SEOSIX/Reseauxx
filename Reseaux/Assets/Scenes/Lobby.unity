@@ -785,8 +785,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 461dd2e186b92a741b351a8fd78a7ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowCamera
-  offset: {x: 0, y: 0, z: 0}
-  smoothSpeed: 1000
+  distance: 0
+  height: 4.47
+  mouseSensitivity: 100
+  pitchMin: -10
+  pitchMax: 60
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

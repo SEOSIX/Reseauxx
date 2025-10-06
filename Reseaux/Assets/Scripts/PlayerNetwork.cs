@@ -5,10 +5,6 @@ using UnityEngine;
 public class PlayerNetwork : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed = 10f;
-    [SerializeField] private KeyCode left = KeyCode.A;
-    [SerializeField] private KeyCode right = KeyCode.D;
-    [SerializeField] private KeyCode down = KeyCode.S;
-    [SerializeField] private KeyCode up = KeyCode.W;
 
     private NetworkVariable<PlayerData> playerData = new(
         new PlayerData { life = 100, stunt = false },
@@ -31,16 +27,17 @@ public class PlayerNetwork : NetworkBehaviour
         {
             _renderer.material.color = newColor;
         };
+
         if (IsServer)
         {
             if (IsHost)
                 playerColor.Value = Color.green;
             if (OwnerClientId == 1)
-            {
-                playerColor.Value = Color.blue; 
-            }
+                playerColor.Value = Color.blue;
         }
+
         _renderer.material.color = playerColor.Value;
+
         if (IsOwner)
         {
             FollowCamera cam = Camera.main.GetComponent<FollowCamera>();
@@ -55,21 +52,24 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (!IsOwner)
             return;
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
 
-        direction = Vector3.zero;
-        if (Input.GetKey(left)) direction.x = -1f;
-        if (Input.GetKey(right)) direction.x = 1f;
-        if (Input.GetKey(down)) direction.z = -1f;
-        if (Input.GetKey(up)) direction.z = 1f;
+        direction = new Vector3(moveX, 0f, moveY).normalized;
 
-        direction = direction.normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
+        if (direction.magnitude >= 0.1f)
+        {
+            Vector3 moveDir = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f) * direction;
+            transform.position += moveDir * moveSpeed * Time.deltaTime;
+            transform.forward = moveDir;
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TestRpc();
         }
     }
+
     [Rpc(SendTo.Server)]
     void TestRpc()
     {
