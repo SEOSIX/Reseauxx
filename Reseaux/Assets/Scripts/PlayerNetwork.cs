@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerNetwork : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed = 10f;
+    
+    private GameObject lastHitObject;
 
     private NetworkVariable<PlayerData> playerData = new(
         new PlayerData { life = 100, stunt = false },
@@ -63,7 +65,38 @@ public class PlayerNetwork : NetworkBehaviour
             transform.position += moveDir * moveSpeed * Time.deltaTime;
             transform.forward = moveDir;
         }
+        
+        Vector3 cameraForward = Camera.main.transform.forward; 
+        Debug.DrawRay(Camera.main.transform.position, cameraForward * 7, Color.green);
+        if (Physics.Raycast( Camera.main.transform.position, cameraForward, out RaycastHit hit, 7))
+        {
+            if (hit.collider.CompareTag("ObjectToTransform"))
+            {
+                GameObject hitObject = hit.collider.gameObject;
+                if (hitObject != lastHitObject)
+                {
+                    if (lastHitObject != null)
+                    {
+                        lastHitObject.GetComponent<Renderer>().material.color = Color.white;
+                    }
+                    hitObject.GetComponent<Renderer>().material.color = Color.cyan;
+                    lastHitObject = hitObject;
 
+                    Debug.Log("Touché : " + hitObject.name);
+                }
+            }
+            
+        }
+        else
+        {
+            if (lastHitObject != null)
+            {
+                lastHitObject.GetComponent<Renderer>().material.color = Color.white;
+                lastHitObject = null;
+            }
+
+            Debug.Log("out");
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TestRpc();
