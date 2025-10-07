@@ -6,6 +6,8 @@ public class PlayerNetwork : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private Mesh[] availableMeshes;
+
+
     private GameObject lastHitObject;
 
     private NetworkVariable<PlayerData> playerData = new(
@@ -105,8 +107,8 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out NetworkObject targetObject))
         {
-            Mesh mesh = targetObject.GetComponent<MeshFilter>().mesh;
-            ApplyMesh(mesh);
+            Mesh mesh = targetObject.GetComponentInChildren<MeshFilter>().mesh;
+            ApplyMeshRpc(mesh);
             ChangeMeshClientRpc(targetId);
         }
     }
@@ -116,12 +118,11 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (!IsOwner && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out NetworkObject targetObject))
         {
-            Mesh mesh = targetObject.GetComponent<MeshFilter>().mesh;
-            ApplyMesh(mesh);
+            Mesh mesh = targetObject.GetComponentInChildren<MeshFilter>().mesh;
+            ApplyMeshRpc(mesh);
         }
     }
-
-    private void ApplyMesh(Mesh mesh)
+    private void ApplyMeshRpc(Mesh mesh)
     {
         if (mesh != null)
             GetComponentInChildren<MeshFilter>().mesh = mesh;
