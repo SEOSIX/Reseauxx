@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 3755135684562575188}
   - component: {fileID: -433305410464077487}
   - component: {fileID: -3446155525657064945}
+  - component: {fileID: -2474046254047966768}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -236,3 +237,15 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &-2474046254047966768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4553876211116538519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed6b2c277163ee43bccc8a22b2c1b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chooserole

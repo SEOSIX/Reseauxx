@@ -91,6 +91,7 @@ public class PlayerNetwork : NetworkBehaviour
                         ChangeMeshServerRpc(hitNetworkObject.NetworkObjectId);
                 }
             }
+            CatchHidder(hit);
         }
         else
         {
@@ -126,6 +127,28 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (mesh != null)
             GetComponentInChildren<MeshFilter>().mesh = mesh;
+    }
+    
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void SetRoleServerRpc(string newTag)
+    {
+        gameObject.tag = newTag;
+        SetRoleClientRpc(newTag);
+    }
+
+    [ClientRpc]
+    private void SetRoleClientRpc(string newTag)
+    {
+        gameObject.tag = newTag;
+    }
+
+    private void CatchHidder(RaycastHit hit)
+    {
+        if (hit.collider.CompareTag("Hidder"))
+        {
+            Debug.Log("Found!");
+        }
     }
 }
 
