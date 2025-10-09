@@ -102,25 +102,37 @@ public class PlayerNetwork : NetworkBehaviour
             }
         }
     }
+
+
+    #region BaseForProptHunt
+
     
+
     [ServerRpc]
     void ChangeMeshServerRpc(ulong targetId)
     {
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out NetworkObject targetObject))
         {
+            
+            Vector3 targetScale = targetObject.transform.localScale;
             Mesh mesh = targetObject.GetComponentInChildren<MeshFilter>().mesh;
+            Collider targetCollider = targetObject.GetComponentInChildren<Collider>();
+            
             ApplyMeshRpc(mesh);
-            ChangeMeshClientRpc(targetId);
+            ChangeMeshClientRpc(targetId,targetScale );
+            CopyCollider(targetCollider);
         }
     }
 
     [ClientRpc]
-    void ChangeMeshClientRpc(ulong targetId)
+    void ChangeMeshClientRpc(ulong targetId, Vector3 targetScale)
     {
         if (!IsOwner && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out NetworkObject targetObject))
         {
             Mesh mesh = targetObject.GetComponentInChildren<MeshFilter>().mesh;
+            Collider targetCollider = targetObject.GetComponentInChildren<Collider>();
             ApplyMeshRpc(mesh);
+            CopyCollider(targetCollider);
         }
     }
     private void ApplyMeshRpc(Mesh mesh)
@@ -142,6 +154,56 @@ public class PlayerNetwork : NetworkBehaviour
     {
         gameObject.tag = newTag;
     }
+    private void CopyCollider(Collider sourceCollider) 
+    {
+        foreach (Collider oldCol in GetComponentsInChildren<Collider>())
+        {
+            Destroy(oldCol);
+        }
+
+        if (sourceCollider == null)
+        {
+            Debug.LogWarning("Aucun collider à copier !");
+            return;
+        }
+        Transform targetParent = GetComponentInChildren<MeshRenderer>()?.transform ?? transform;
+        if (sourceCollider is BoxCollider srcBox)
+        {
+            BoxCollider newCol = targetParent.gameObject.AddComponent<BoxCollider>();
+            newCol.center = srcBox.center;
+            newCol.size = srcBox.size;
+            newCol.isTrigger = srcBox.isTrigger;
+        }
+        else if (sourceCollider is SphereCollider srcSphere)
+        {
+            SphereCollider newCol = targetParent.gameObject.AddComponent<SphereCollider>();
+            newCol.center = srcSphere.center;
+            newCol.radius = srcSphere.radius;
+            newCol.isTrigger = srcSphere.isTrigger;
+        }
+        else if (sourceCollider is CapsuleCollider srcCapsule)
+        {
+            CapsuleCollider newCol = targetParent.gameObject.AddComponent<CapsuleCollider>();
+            newCol.center = srcCapsule.center;
+            newCol.radius = srcCapsule.radius;
+            newCol.height = srcCapsule.height;
+            newCol.direction = srcCapsule.direction;
+            newCol.isTrigger = srcCapsule.isTrigger;
+        }
+        else if (sourceCollider is MeshCollider srcMesh)
+        {
+            MeshCollider newCol = targetParent.gameObject.AddComponent<MeshCollider>();
+            newCol.sharedMesh = srcMesh.sharedMesh;
+            newCol.convex = srcMesh.convex;
+            newCol.isTrigger = srcMesh.isTrigger;
+        }
+        else
+        {
+            Debug.LogWarning($"Type de collider non pris en charge : {sourceCollider.GetType().Name}");
+        }
+    }
+    
+    #endregion
 
     private void CatchHidder(RaycastHit hit)
     {
@@ -150,6 +212,8 @@ public class PlayerNetwork : NetworkBehaviour
             Debug.Log("Found!");
         }
     }
+   
+
 }
 
 public struct PlayerData : INetworkSerializable
