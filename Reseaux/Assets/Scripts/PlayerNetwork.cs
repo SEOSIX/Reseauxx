@@ -7,6 +7,7 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Renderer playerRenderer;
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private PropMorpher propMorpher;
+    [SerializeField] private FollowCamera cameraFollow;
 
     [Header("Stats")]
     [SerializeField] private float baseLife = 100f;
@@ -84,6 +85,19 @@ public class PlayerNetwork : NetworkBehaviour
     private void SetRoleClientRpc(string newTag)
     {
         gameObject.tag = newTag;
+        
+        if (!IsOwner) return;
+        
+        FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
+        if (gameObject.CompareTag("Seaker"))
+        {
+            if (cam != null)
+            {
+                cam.height = 0.35f;
+                cam.distance = 0.47f;
+            }
+            gameObject.GetComponent<PropMorpher>().enabled = false;
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

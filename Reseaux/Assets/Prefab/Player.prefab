@@ -97,7 +97,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2604271843271008871}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 4a7b5a27a9e0ad940a98a63156e06c60, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -194,6 +194,7 @@ MonoBehaviour:
   playerRenderer: {fileID: 8839978186500560826}
   movement: {fileID: 8789104765449345330}
   propMorpher: {fileID: 8379445147967969899}
+  cameraFollow: {fileID: 0}
   baseLife: 100
 --- !u!114 &-3446155525657064945
 MonoBehaviour:
@@ -284,6 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 10
+  jumpForce: 7.35
 --- !u!114 &8379445147967969899
 MonoBehaviour:
   m_ObjectHideFlags: 0

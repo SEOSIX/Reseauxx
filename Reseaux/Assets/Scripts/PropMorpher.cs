@@ -15,6 +15,12 @@ public class PropMorpher : NetworkBehaviour
     private void Update()
     {
        DefRayCast();
+       if (!IsOwner) return;
+
+       if (Input.GetKeyDown(KeyCode.E))
+       {
+           RequestDuplicateServerRpc();
+       }
     }
 
 void DefRayCast(){
@@ -27,7 +33,7 @@ void DefRayCast(){
         {
             HighlightObject(hit.collider.gameObject);
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetMouseButton(0))
             {
                 NetworkObject targetNetObj = hit.collider.GetComponent<NetworkObject>();
                 if (targetNetObj != null)
@@ -59,6 +65,18 @@ void DefRayCast(){
             ApplyMorphClientRpc(meshIndex, scale);
         }
     }
+    [ServerRpc]
+    private void RequestDuplicateServerRpc(ServerRpcParams rpcParams = default)
+    {
+        var mf = GetComponentInChildren<MeshFilter>();
+        if (mf == null || availableMeshes == null || availableMeshes.Length == 0) return;
+
+        var currentMesh = mf.sharedMesh;
+        int meshIndex = System.Array.IndexOf(availableMeshes, currentMesh);
+        if (meshIndex < 0) meshIndex = 0;
+
+        DuplicateMeshClientRpc(meshIndex, transform.position, transform.rotation);
+    }
 
     [ClientRpc]
     private void ApplyMorphClientRpc(int meshIndex, Vector3 scale)
@@ -66,6 +84,34 @@ void DefRayCast(){
         if (IsOwner) return;
         ApplyMesh(meshIndex);
         transform.localScale = scale;
+    }
+    [ClientRpc]
+    private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot)
+    {
+        Mesh meshToUse = (availableMeshes != null && meshIndex >= 0 && meshIndex < availableMeshes.Length)
+            ? availableMeshes[meshIndex]
+            : (availableMeshes != null && availableMeshes.Length > 0 ? availableMeshes[0] : null);
+
+        if (meshToUse == null) return;
+        GameObject copy = new GameObject("MeshCopy");
+        var mf = copy.AddComponent<MeshFilter>();
+        mf.mesh = meshToUse;
+
+        var mr = copy.AddComponent<MeshRenderer>();
+        if (playerRenderer != null)
+        {
+            Renderer mrRenderer;
+            mrRenderer = copy.GetComponent<Renderer>();
+            
+            Renderer mtplayerRenderer;
+            mtplayerRenderer = playerRenderer.GetComponent<Renderer>();
+            
+            mrRenderer.material = mtplayerRenderer.sharedMaterial;
+        }
+
+        copy.transform.position = pos;
+        copy.transform.rotation = rot;
+        copy.isStatic = true;
     }
 
     private void ApplyMorph(int meshIndex, Collider col, Vector3 scale)
