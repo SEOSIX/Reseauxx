@@ -5,8 +5,7 @@ public class PlayerMovement : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float jumpForce = 5f;
-    
-    
+
     [Header("WallRunning")]
     public LayerMask wall;
     public LayerMask ground;
@@ -60,7 +59,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Move()
     {
-        if (isWallRunning) return;
+        if (isWallRunning) return; // pas de mouvement normal pendant le wallrun
 
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
@@ -68,7 +67,7 @@ public class PlayerMovement : NetworkBehaviour
         Vector3 direction = new Vector3(moveX, 0, moveY).normalized;
         if (direction.magnitude > 0.1f)
         {
-            Vector3 moveDir = (Quaternion.FromToRotation(Vector3.up, transform.up) * direction);
+            Vector3 moveDir = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * direction;
             Vector3 move = moveDir * moveSpeed * Time.deltaTime;
             rb.MovePosition(rb.position + move);
             transform.forward = moveDir;
@@ -102,11 +101,14 @@ public class PlayerMovement : NetworkBehaviour
     private void StateMachine()
     {
         float moveY = Input.GetAxis("Vertical");
+
+        // Démarrer le WallRun
         if ((wallLeft || wallRight) && moveY > 0 && AboveGround())
         {
             if (!isWallRunning)
                 StartWallRun();
         }
+        // Arrêter le WallRun
         else if (isWallRunning)
         {
             StopWallRun();
@@ -130,13 +132,18 @@ public class PlayerMovement : NetworkBehaviour
         }
 
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
-        Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up);
+        Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
 
-        if (Vector3.Dot(oritentation.forward, wallForward) < 0)
+        if ((oritentation.forward - wallForward).magnitude > (oritentation.forward - -wallForward).magnitude)
             wallForward = -wallForward;
-        rb.linearVelocity = new Vector3(wallForward.x * wallRunForce, rb.linearVelocity.y, wallForward.z * wallRunForce);
-        rb.AddForce(-wallNormal * 50f, ForceMode.Force);
-        rb.AddForce(Vector3.down * 5f, ForceMode.Acceleration);
+        
+        
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
+        rb.AddForce(-wallNormal * 100f, ForceMode.Force);
+        if (rb.linearVelocity.y < 0)
+            rb.AddForce(Vector3.down * 2f, ForceMode.Acceleration);
     }
 
     private void StopWallRun()

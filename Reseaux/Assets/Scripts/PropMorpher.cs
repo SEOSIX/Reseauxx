@@ -23,21 +23,26 @@ public class PropMorpher : NetworkBehaviour
        }
     }
 
-void DefRayCast(){
- if (!IsOwner) return;
+    void DefRayCast(){
+     if (!IsOwner) return;
 
-    Vector3 camForward = Camera.main.transform.forward;
-    if (Physics.Raycast(Camera.main.transform.position, camForward, out RaycastHit hit, 10))
-    {
-        if (hit.collider.CompareTag("ObjectToTransform"))
+        Vector3 camForward = Camera.main.transform.forward;
+        if (Physics.Raycast(Camera.main.transform.position, camForward, out RaycastHit hit, 10))
         {
-            HighlightObject(hit.collider.gameObject);
-
-            if (Input.GetMouseButton(0))
+            if (hit.collider.CompareTag("ObjectToTransform"))
             {
-                NetworkObject targetNetObj = hit.collider.GetComponent<NetworkObject>();
-                if (targetNetObj != null)
-                    RequestMorphServerRpc(targetNetObj.NetworkObjectId);
+                HighlightObject(hit.collider.gameObject);
+
+                if (Input.GetMouseButton(0))
+                {
+                    NetworkObject targetNetObj = hit.collider.GetComponent<NetworkObject>();
+                    if (targetNetObj != null)
+                        RequestMorphServerRpc(targetNetObj.NetworkObjectId);
+                }
+            }
+            else
+            {
+                ClearHighlight();
             }
         }
         else
@@ -45,11 +50,6 @@ void DefRayCast(){
             ClearHighlight();
         }
     }
-    else
-    {
-        ClearHighlight();
-    }
-}
 
     [ServerRpc]
     private void RequestMorphServerRpc(ulong targetId)

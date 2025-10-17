@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,10 +9,11 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private PropMorpher propMorpher;
     [SerializeField] private FollowCamera cameraFollow;
-
+    
     [Header("Stats")]
     [SerializeField] private float baseLife = 100f;
 
+    
     private NetworkVariable<PlayerData> playerData = new(
         new PlayerData { life = 100, stunt = false },
         NetworkVariableReadPermission.Everyone,
@@ -85,7 +87,7 @@ public class PlayerNetwork : NetworkBehaviour
     private void SetRoleClientRpc(string newTag)
     {
         gameObject.tag = newTag;
-        
+
         if (!IsOwner) return;
         
         FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
@@ -99,22 +101,6 @@ public class PlayerNetwork : NetworkBehaviour
             gameObject.GetComponent<PropMorpher>().enabled = false;
         }
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void ModifyLifeServerRpc(float amount)
-    {
-        PlayerData data = playerData.Value;
-        data.life = Mathf.Clamp(data.life + (int)amount, 0, (int)baseLife);
-        playerData.Value = data;
-    }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = IsOwner ? Color.cyan : Color.gray;
-        Gizmos.DrawWireSphere(transform.position + Vector3.up * 2, 0.25f);
-    }
-#endif
 }
 
 public struct PlayerData : INetworkSerializable
