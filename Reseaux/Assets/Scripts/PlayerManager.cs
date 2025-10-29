@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerManager : NetworkBehaviour
 {
     public static PlayerManager Instance;
 
+    public InputField pseudo;
     private readonly List<PlayerNetwork> connectedPlayers = new List<PlayerNetwork>();
 
     private void Awake()
@@ -27,7 +29,7 @@ public class PlayerManager : NetworkBehaviour
         if (!connectedPlayers.Contains(player))
             connectedPlayers.Add(player);
 
-        Debug.Log($"Player registered. Total: {connectedPlayers.Count}");
+        Debug.Log($"{pseudo.text} connecté. Total: {connectedPlayers.Count}");
     }
 
     private void OnClientDisconnected(ulong clientId)
