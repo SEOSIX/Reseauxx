@@ -13,6 +13,7 @@ public class PlayerNetwork : NetworkBehaviour
     [Header("Stats")]
     [SerializeField] private float baseLife = 100f;
 
+    public PlayerManager playerManager;
     
     private NetworkVariable<PlayerData> playerData = new(
         new PlayerData { life = 100, stunt = false },
@@ -45,7 +46,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (IsServer)
         {
-            PlayerManager.Instance?.RegisterPlayer(this);
+            playerManager.RegisterPlayer(this);
         }
 
         if (playerRenderer != null)

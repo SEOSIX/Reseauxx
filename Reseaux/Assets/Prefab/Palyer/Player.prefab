@@ -225,6 +225,7 @@ MonoBehaviour:
   propMorpher: {fileID: 8379445147967969899}
   cameraFollow: {fileID: 0}
   baseLife: 100
+  playerManager: {fileID: -6338550848801938631}
 --- !u!114 &-3446155525657064945
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,35 +1,28 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PlayerManager : NetworkBehaviour
 {
-    public static PlayerManager Instance;
 
-    public InputField pseudo;
     private readonly List<PlayerNetwork> connectedPlayers = new List<PlayerNetwork>();
-
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        AssignRandomRoles();
     }
-
+    
     public void RegisterPlayer(PlayerNetwork player)
     {
         if (!connectedPlayers.Contains(player))
             connectedPlayers.Add(player);
 
-        Debug.Log($"{pseudo.text} connecté. Total: {connectedPlayers.Count}");
+        //Debug.Log($"{pseudo} connecté. Total: {connectedPlayers.Count}");
     }
 
     private void OnClientDisconnected(ulong clientId)
@@ -44,15 +37,12 @@ public class PlayerManager : NetworkBehaviour
     public void AssignRandomRoles()
     {
         if (!IsServer) return;
-
         if (connectedPlayers.Count == 0) return;
 
-        int seekerIndex = Random.Range(0, connectedPlayers.Count);
-
-        for (int i = 0; i < connectedPlayers.Count; i++)
+        foreach (var player in connectedPlayers)
         {
-            string role = i == seekerIndex ? "Seeker" : "Hidder";
-            connectedPlayers[i].SetRoleServerRpc(role);
+            string role = Random.value < 0.5f ? "Hidder" : "Seaker";
+            player.SetRoleServerRpc(role);
         }
     }
 }
