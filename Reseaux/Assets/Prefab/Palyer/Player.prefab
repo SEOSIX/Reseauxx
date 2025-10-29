@@ -126,11 +126,11 @@ GameObject:
   - component: {fileID: 3755135684562575188}
   - component: {fileID: -433305410464077487}
   - component: {fileID: -3446155525657064945}
-  - component: {fileID: -2474046254047966768}
   - component: {fileID: 7448046491511900434}
   - component: {fileID: 8789104765449345330}
   - component: {fileID: 8379445147967969899}
   - component: {fileID: -6338550848801938631}
+  - component: {fileID: 1908932165290987410}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 345941367
+  GlobalObjectIdHash: 2815686448
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -272,18 +272,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &-2474046254047966768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4553876211116538519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eed6b2c277163ee43bccc8a22b2c1b0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Chooserole
 --- !u!114 &7448046491511900434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +347,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &1908932165290987410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4553876211116538519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f23ecfdbe13cca43af37ddf192c2825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gun
+  balls: {fileID: 2179622467859311225, guid: a4a8717aad442ad4a86d0b5902a3e71c, type: 3}
+  zoneToInstanciate: {fileID: 5640225128311279151}
+  shootingForce: 199.87
+  ballMax: 57
 --- !u!1 &4747089754919373770
 GameObject:
   m_ObjectHideFlags: 0

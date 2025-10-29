@@ -97,13 +97,13 @@ public class PlayerNetwork : NetworkBehaviour
                 cam.distance = 0.47f;
             }
             gameObject.GetComponent<PropMorpher>().enabled = false;
-//            Gun.instance.gameObject.SetActive(true);
+            Gun.instance.enabled = true;
             Camera.main.fieldOfView = 70;
         }
         else
         {
             gameObject.GetComponent<PropMorpher>().enabled = true;
-//            Gun.instance.gameObject.SetActive(false);
+            Gun.instance.enabled = false;
             Camera.main.fieldOfView = 70;
         }
     }

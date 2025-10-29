@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +10,7 @@ public class PlayerManager : NetworkBehaviour
 {
 
     private readonly List<PlayerNetwork> connectedPlayers = new List<PlayerNetwork>();
-
+    
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -21,8 +22,11 @@ public class PlayerManager : NetworkBehaviour
     {
         if (!connectedPlayers.Contains(player))
             connectedPlayers.Add(player);
-
-        //Debug.Log($"{pseudo} connecté. Total: {connectedPlayers.Count}");
+        
+        string pseudoPlayer = PseudoManager.instance.DebugPseudoName();
+        
+        
+        Debug.Log($"{pseudoPlayer} connecté. Total: {connectedPlayers.Count}");
     }
 
     private void OnClientDisconnected(ulong clientId)
