@@ -4,27 +4,32 @@ using UnityEngine;
 public class PropMorpher : NetworkBehaviour
 {
     [SerializeField] private Mesh[] availableMeshes;
+    [SerializeField] private int[] lifeValues;
+    private LifeManager lifeManager;
+
     private GameObject lastHitObject;
     private Renderer playerRenderer;
 
     private void Start()
     {
         playerRenderer = GetComponentInChildren<Renderer>();
+        lifeManager = LifeManager.instance;
     }
 
     private void Update()
     {
-       DefRayCast();
-       if (!IsOwner) return;
+        DefRayCast();
+        if (!IsOwner) return;
 
-       if (Input.GetKeyDown(KeyCode.E))
-       {
-           RequestDuplicateServerRpc();
-       }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RequestDuplicateServerRpc();
+        }
     }
 
-    void DefRayCast(){
-     if (!IsOwner) return;
+    void DefRayCast()
+    {
+        if (!IsOwner) return;
 
         Vector3 camForward = Camera.main.transform.forward;
         if (Physics.Raycast(Camera.main.transform.position, camForward, out RaycastHit hit, 10))
@@ -65,6 +70,7 @@ public class PropMorpher : NetworkBehaviour
             ApplyMorphClientRpc(meshIndex, scale);
         }
     }
+
     [ServerRpc]
     private void RequestDuplicateServerRpc(ServerRpcParams rpcParams = default)
     {
@@ -84,7 +90,9 @@ public class PropMorpher : NetworkBehaviour
         if (IsOwner) return;
         ApplyMesh(meshIndex);
         transform.localScale = scale;
+        ApplyLife(meshIndex);
     }
+    
     [ClientRpc]
     private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot)
     {
@@ -93,25 +101,24 @@ public class PropMorpher : NetworkBehaviour
             : (availableMeshes != null && availableMeshes.Length > 0 ? availableMeshes[0] : null);
 
         if (meshToUse == null) return;
+
         GameObject copy = new GameObject("MeshCopy");
         var mf = copy.AddComponent<MeshFilter>();
         mf.mesh = meshToUse;
 
         var mr = copy.AddComponent<MeshRenderer>();
         if (playerRenderer != null)
-        {
-            Renderer mrRenderer;
-            mrRenderer = copy.GetComponent<Renderer>();
-            
-            Renderer mtplayerRenderer;
-            mtplayerRenderer = playerRenderer.GetComponent<Renderer>();
-            
-            mrRenderer.material = mtplayerRenderer.sharedMaterial;
-        }
+            mr.material = playerRenderer.sharedMaterial;
 
         copy.transform.position = pos;
         copy.transform.rotation = rot;
         copy.isStatic = true;
+        
+        if (lifeManager != null && lifeValues != null && meshIndex >= 0 && meshIndex < lifeValues.Length)
+        {
+            var duplicateLife = copy.AddComponent<LifeManager>();
+            duplicateLife.SetLife(lifeValues[meshIndex]);
+        }
     }
 
     private void ApplyMorph(int meshIndex, Collider col, Vector3 scale)
@@ -119,6 +126,7 @@ public class PropMorpher : NetworkBehaviour
         ApplyMesh(meshIndex);
         CopyCollider(col);
         transform.localScale = scale;
+        ApplyLife(meshIndex);
     }
 
     private void ApplyMesh(int index)
@@ -127,6 +135,12 @@ public class PropMorpher : NetworkBehaviour
         {
             GetComponentInChildren<MeshFilter>().mesh = availableMeshes[index];
         }
+    }
+
+    private void ApplyLife(int index)
+    {
+        if (lifeManager == null || lifeValues == null || index < 0 || index >= lifeValues.Length) return;
+        lifeManager.SetLife(lifeValues[index]);
     }
 
     private void HighlightObject(GameObject go)

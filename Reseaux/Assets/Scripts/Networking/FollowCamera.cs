@@ -12,8 +12,8 @@ public class FollowCamera : MonoBehaviour
 
     [Header("Rotation Camera")]
     public float mouseSensitivity = 100f;
-    private float yaw = 0f;
-    private float pitch = 0f;
+    private float yaw;
+    private float pitch;
     public float pitchMin = -40f;
     public float pitchMax = 85f;
 

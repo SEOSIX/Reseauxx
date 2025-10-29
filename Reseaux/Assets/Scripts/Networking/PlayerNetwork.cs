@@ -45,10 +45,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (IsServer)
         {
-            if (IsHost)
-                playerColor.Value = Color.green;
-            else
-                playerColor.Value = Color.blue;
+            PlayerManager.Instance?.RegisterPlayer(this);
         }
 
         if (playerRenderer != null)
@@ -99,8 +96,18 @@ public class PlayerNetwork : NetworkBehaviour
                 cam.distance = 0.47f;
             }
             gameObject.GetComponent<PropMorpher>().enabled = false;
+//            Gun.instance.gameObject.SetActive(true);
+            Camera.main.fieldOfView = 70;
+        }
+        else
+        {
+            gameObject.GetComponent<PropMorpher>().enabled = true;
+//            Gun.instance.gameObject.SetActive(false);
+            Camera.main.fieldOfView = 70;
         }
     }
+    
+    
 }
 
 public struct PlayerData : INetworkSerializable
