@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using Unity.Netcode;
@@ -11,11 +12,20 @@ public class PlayerManager : NetworkBehaviour
 
     private readonly List<PlayerNetwork> connectedPlayers = new List<PlayerNetwork>();
     
+    
     public override void OnNetworkSpawn()
     {
         if (IsServer)
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-        AssignRandomRoles();
+        AssignRandomRoles(); 
+        ClientConnected();
+    }
+
+    public void ClientConnected()
+    {
+        
+        //c une coroutine a mettre mais oklm
+        //PseudoManager.instance.DebugDislayConnexion();
     }
     
     public void RegisterPlayer(PlayerNetwork player)
@@ -32,7 +42,6 @@ public class PlayerManager : NetworkBehaviour
     private void OnClientDisconnected(ulong clientId)
     {
         connectedPlayers.RemoveAll(p => p.OwnerClientId == clientId);
-        
         
         //idée, je peut demander un pseudo au Player avant qu'il se connecte et après seulement il se connecte et son pseudo est affiché dans son canvas
         Debug.Log($"Player disconnected. Total: {connectedPlayers.Count}");
