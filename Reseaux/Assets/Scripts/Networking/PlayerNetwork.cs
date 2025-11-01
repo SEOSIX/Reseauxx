@@ -1,4 +1,6 @@
 using System;
+using DefaultNamespace;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -26,9 +28,24 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
+    
+    private NetworkVariable<FixedString32Bytes> playerPseudo = new(
+        "Unknown",
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+    
+    public string PlayerPseudo => playerPseudo.Value.ToString();
+
 
     public override void OnNetworkSpawn()
     {
+        playerPseudo.OnValueChanged += (oldPseudo, newPseudo) =>
+        {
+            Debug.Log($"Pseudo mis à jour : {newPseudo}");
+            StartCoroutine(PseudoManager.instance.DebugDislayConnexion(newPseudo.ToString()));
+        };
+        
         if (playerRenderer == null)
             playerRenderer = GetComponentInChildren<Renderer>();
 
@@ -63,6 +80,9 @@ public class PlayerNetwork : NetworkBehaviour
             FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
             if (cam != null)
                 cam.SetTarget(transform);
+            
+            string pseudo = PseudoManager.instance.playerName.text; 
+            SetPseudoServerRpc(pseudo);
         }
         else
         {
@@ -80,7 +100,12 @@ public class PlayerNetwork : NetworkBehaviour
         gameObject.tag = newTag;
         SetRoleClientRpc(newTag);
     }
-
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPseudoServerRpc(string pseudo)
+    {
+        playerPseudo.Value = pseudo;
+    }
+    
     [ClientRpc]
     private void SetRoleClientRpc(string newTag)
     {
@@ -104,6 +129,9 @@ public class PlayerNetwork : NetworkBehaviour
         {
             gameObject.GetComponent<PropMorpher>().enabled = true;
             Gun.instance.enabled = false;
+            LifeManager.instance.playerSlider.gameObject.SetActive(true);
+            LifeManager.instance.playerSlider.value = LifeManager.instance.playerSlider.maxValue;
+            Cursor.instance.cursorMain.SetActive(true);
             Camera.main.fieldOfView = 70;
         }
     }

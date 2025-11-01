@@ -10,6 +10,31 @@ public class PropMorpher : NetworkBehaviour
     private GameObject lastHitObject;
     private Renderer playerRenderer;
 
+    
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (!IsOwner) return;
+
+        if (lifeManager == null)
+            lifeManager = LifeManager.instance;
+        var meshFilter = GetComponentInChildren<MeshFilter>();
+        if (meshFilter != null && availableMeshes != null && lifeValues != null)
+        {
+            int meshIndex = System.Array.IndexOf(availableMeshes, meshFilter.sharedMesh);
+            if (meshIndex >= 0 && meshIndex < lifeValues.Length)
+            {
+                lifeManager.SetLife(lifeValues[meshIndex]);
+            }
+            else
+            {
+                lifeManager.SetLife(lifeValues[0]);
+            }
+        }
+    }
+
+    
     private void Start()
     {
         playerRenderer = GetComponentInChildren<Renderer>();
@@ -27,17 +52,30 @@ public class PropMorpher : NetworkBehaviour
         }
     }
 
+    private bool isAimingObject = false;
+    private bool hasReplacedBeforeCenter = false;
+    private GameObject currentTarget;
+
     void DefRayCast()
     {
         if (!IsOwner) return;
 
         Vector3 camForward = Camera.main.transform.forward;
+
         if (Physics.Raycast(Camera.main.transform.position, camForward, out RaycastHit hit, 10))
         {
             if (hit.collider.CompareTag("ObjectToTransform"))
             {
-                HighlightObject(hit.collider.gameObject);
+                GameObject target = hit.collider.gameObject;
+                if (currentTarget != target)
+                {
+                    currentTarget = target;
+                    isAimingObject = true;
+                    hasReplacedBeforeCenter = false;
+                    Cursor.instance.RecenterCursor();
+                }
 
+                HighlightObject(target);
                 if (Input.GetMouseButton(0))
                 {
                     NetworkObject targetNetObj = hit.collider.GetComponent<NetworkObject>();
@@ -47,14 +85,27 @@ public class PropMorpher : NetworkBehaviour
             }
             else
             {
-                ClearHighlight();
+                ResetCursorAndHighlight();
             }
         }
         else
         {
-            ClearHighlight();
+            ResetCursorAndHighlight();
         }
     }
+
+    private void ResetCursorAndHighlight()
+    {
+        if (isAimingObject)
+        {
+            isAimingObject = false;
+            hasReplacedBeforeCenter = false;
+            currentTarget = null;
+            Cursor.instance.ReplaceCursor();
+        }
+        ClearHighlight();
+    }
+
 
     [ServerRpc]
     private void RequestMorphServerRpc(ulong targetId)
@@ -87,7 +138,6 @@ public class PropMorpher : NetworkBehaviour
     [ClientRpc]
     private void ApplyMorphClientRpc(int meshIndex, Vector3 scale)
     {
-        if (IsOwner) return;
         ApplyMesh(meshIndex);
         transform.localScale = scale;
         ApplyLife(meshIndex);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,16 +18,11 @@ namespace DefaultNamespace
         {
             instance = this;
         }
-
-        public virtual string DebugPseudoName()
+        
+        
+        public IEnumerator DebugDislayConnexion(string pseudo)
         {
-            return playerName.text;
-        }
-
-
-        public IEnumerator DebugDislayConnexion()
-        {
-            dislayConnexion.text = $"{playerName.text} join the game";
+            dislayConnexion.text = $"{pseudo} join the game";
             yield return new WaitForSeconds(2f);
             dislayConnexion.text = "";
         }

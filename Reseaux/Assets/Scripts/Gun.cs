@@ -1,7 +1,8 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public class Gun : NetworkBehaviour
 {
     public static Gun instance { get; private set;}
     [SerializeField] private GameObject balls;
@@ -9,34 +10,48 @@ public class Gun : MonoBehaviour
     [SerializeField] private float shootingForce = 10f;
 
     [SerializeField] private int ballMax;
-
+    [SerializeField] private float fireRate = 0.5f;
+    private float lastFireTime = 0f;
 
     private void Awake()
     {
         instance = this;
     }
 
-    void Update()
+    private void Update()
     {
+        if (!IsOwner) return;
+
         if (Input.GetMouseButton(0))
         {
-            Shooting();
-        }
-
-        if (ballMax <= 0)
-        {
-            Debug.Log("Les hidders ont gagnés");
+            TryShoot();
         }
     }
 
-    private void Shooting()
+    private void TryShoot()
     {
-        GameObject objectToInstanciate = Instantiate(balls, zoneToInstanciate.position, Quaternion.identity);
-        Rigidbody rb = objectToInstanciate.GetComponent<Rigidbody>();
+        if (Time.time - lastFireTime < fireRate)
+            return;
+
+        lastFireTime = Time.time;
+        ShootServerRpc();
+    }
+
+    [ServerRpc]
+    private void ShootServerRpc()
+    {
+        if (ballMax <= 0) return;
+
+        GameObject bullet = Instantiate(balls, zoneToInstanciate.position, zoneToInstanciate.rotation);
+        bullet.GetComponent<NetworkObject>().Spawn();
+
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.AddForce(zoneToInstanciate.forward * shootingForce, ForceMode.Impulse);
         }
+
         ballMax--;
     }
+
 }

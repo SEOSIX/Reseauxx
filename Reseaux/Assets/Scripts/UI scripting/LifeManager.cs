@@ -8,13 +8,14 @@ public class LifeManager : MonoBehaviour
     public static LifeManager instance { get; private set; }
     
     public int lifeValue;
-    [SerializeField] private Slider playerSlider;
+    public Slider playerSlider;
     [SerializeField] private TextMeshProUGUI lifeText;
 
 
     private void Awake()
     {
         instance = this;
+        lifeValue = (int)playerSlider.value;
     }
 
     public void SetLife(int value)

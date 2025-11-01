@@ -4,29 +4,24 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float sprintSpeed = 15f;
     [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float fallSpeed = 10f;
-    [SerializeField] private bool canUseHeadBob = true;
-
-    [Header("Detection")]
-    public float minJumpHeight = 1.5f;
-    public LayerMask ground;
     
-    [Header("HeadBobParameter")] 
-    [SerializeField] private float walkBobSpeed = 14f;
-    [SerializeField] private float walkBobAmount = 0.5f;
-    [SerializeField] private float sprintBobSpeed = 18f;
-    [SerializeField] private float sprintBobAmount = 1f;
-    private float defaultYPos = 0f;
-    private float timer;
+    [Header("Camera Control")]
+    [SerializeField] private float lookSensitivity = 2f;
+    [SerializeField] private float rotationSmoothness = 10f;
 
     private Rigidbody rb;
-    [SerializeField] private bool canJump = true;
-    private Camera playerCamera;
     private Vector3 moveDirection;
     private Vector3 direction;
+
+    private bool isHiding = false;
+    
+    
+    private float yaw;  
+    private float pitch;
 
     private void Start()
     {
@@ -34,51 +29,74 @@ public class PlayerMovement : NetworkBehaviour
         if (rb == null)
             rb = gameObject.AddComponent<Rigidbody>();
         rb.freezeRotation = true;
-        playerCamera = Camera.main;
-
-        defaultYPos = playerCamera.transform.position.y;
+        if (!IsOwner)
+        {
+            enabled = false;
+            return;
+        }
     }
 
     private void Update()
     {
         if (!IsOwner) return;
-   
+        MoveInput();
+        Sprint();
     }
 
     private void FixedUpdate()
     {
         if (!IsOwner) return;
         Move();
-        Sprint();
+        RotatePlayerToCamera();
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            isHiding = !isHiding;
+        }
+    }
+
+    private void MoveInput()
+    {
+        if (isHiding)
+            return;
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
+        direction = new Vector3(moveX, 0, moveY).normalized;
     }
 
     private void Move()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveY = Input.GetAxis("Vertical");
-        
-        direction = new Vector3(moveX, 0, moveY).normalized;
+        if (isHiding)
+            return;
         if (direction.magnitude > 0.1f)
         {
-            moveDirection = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * direction;
-            Vector3 move = moveDirection * moveSpeed * Time.deltaTime;
+            moveDirection = transform.TransformDirection(direction);
+            Vector3 move = moveDirection * moveSpeed * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + move);
-            transform.forward = moveDirection;
-            
         }
+    }
+
+    private void RotatePlayerToCamera()
+    {
+        if (isHiding)
+            return;
+        if (Camera.main == null) return;
+
+        float targetYaw = Camera.main.transform.eulerAngles.y;
+        Quaternion targetRotation = Quaternion.Euler(0, targetYaw, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * rotationSmoothness);
     }
 
     private void Sprint()
     {
+        if (isHiding)
+            return;
         if (Input.GetKey(KeyCode.LeftShift))
         {
             moveSpeed = sprintSpeed;
-            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, 80f, Time.deltaTime * 10f);
         }
         else
         {
             moveSpeed = 10f;
-            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, 70f, Time.deltaTime * 10f);
         }
     }
 }
