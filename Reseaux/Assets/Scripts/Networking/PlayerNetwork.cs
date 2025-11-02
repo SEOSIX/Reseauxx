@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DefaultNamespace;
 using Unity.Collections;
 using Unity.Netcode;
@@ -22,6 +23,12 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
+    
+    private NetworkVariable<int> playerLife = new NetworkVariable<int>(
+        20,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
 
     private NetworkVariable<Color> playerColor = new(
         Color.white,
@@ -35,6 +42,15 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
     
+    
+    private NetworkVariable<float> elapsedTime = new NetworkVariable<float>(
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+    
+    private bool clockRunning = false;
+    
     public string PlayerPseudo => playerPseudo.Value.ToString();
 
 
@@ -46,6 +62,25 @@ public class PlayerNetwork : NetworkBehaviour
             StartCoroutine(PseudoManager.instance.DebugDislayConnexion(newPseudo.ToString()));
         };
         
+        playerLife.OnValueChanged += (oldLife, newLife) =>
+        {
+            if (IsOwner && LifeManager.instance != null)
+            {
+                LifeManager.instance.SetLife(newLife);
+            }
+        };
+
+        elapsedTime.OnValueChanged += (oldTime, newTime) =>
+        {
+            Clock.instance.UpdateTimer(newTime);
+        };
+        
+        if (IsServer)
+        {
+            playerLife.Value = (int)baseLife;
+            playerManager.RegisterPlayer(this);
+            StartCoroutine(ServerClockLoop());
+        }
         if (playerRenderer == null)
             playerRenderer = GetComponentInChildren<Renderer>();
 
@@ -93,6 +128,18 @@ public class PlayerNetwork : NetworkBehaviour
                 propMorpher.enabled = false;
         }
     }
+    
+    private IEnumerator ServerClockLoop()
+    {
+        clockRunning = true;
+        while (clockRunning)
+        {
+            elapsedTime.Value += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    #region server RPC
 
     [ServerRpc(RequireOwnership = false)]
     public void SetRoleServerRpc(string newTag)
@@ -105,6 +152,21 @@ public class PlayerNetwork : NetworkBehaviour
     {
         playerPseudo.Value = pseudo;
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeDamageServerRpc(int damage)
+    {
+        playerLife.Value = Mathf.Max(0, playerLife.Value - damage);
+    }
+
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void StopClockServerRpc()
+    {
+        clockRunning = false;
+    }
+    
+    #endregion
+    
     
     [ClientRpc]
     private void SetRoleClientRpc(string newTag)
@@ -135,7 +197,14 @@ public class PlayerNetwork : NetworkBehaviour
             Camera.main.fieldOfView = 70;
         }
     }
-    
+    [ClientRpc]
+    private void UpdateClockClientRpc(float time)
+    {
+        if (Clock.instance != null)
+        {
+            Clock.instance.SetElapsedTime(time);
+        }
+    }
     
 }
 

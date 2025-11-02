@@ -18,8 +18,6 @@ namespace DefaultNamespace
         {
             instance = this;
         }
-        
-        
         public IEnumerator DebugDislayConnexion(string pseudo)
         {
             dislayConnexion.text = $"{pseudo} join the game";

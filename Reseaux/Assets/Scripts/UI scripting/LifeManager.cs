@@ -18,6 +18,12 @@ public class LifeManager : MonoBehaviour
         lifeValue = (int)playerSlider.value;
     }
 
+    private void Update()
+    {
+        lifeValue = (int)playerSlider.value;
+    }
+
+
     public void SetLife(int value)
     {
         lifeValue = value;

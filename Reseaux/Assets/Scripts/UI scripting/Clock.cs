@@ -1,51 +1,70 @@
+using System;
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Clock : NetworkBehaviour
+public class Clock : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI timerText;
-    
-    private NetworkVariable<float> serverTime = new NetworkVariable<float>(
-        0f,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
+    public static Clock instance { get; private set; }
 
+    [SerializeField] private TextMeshProUGUI timerText;
+    private float elapsedTime = 0f;
     private bool isRunning = false;
 
-    public override void OnNetworkSpawn()
+    private void Awake()
     {
-        if (IsServer)
-        {
-            serverTime.Value = 0f;
-            isRunning = true;
-        }
-        serverTime.OnValueChanged += OnTimeUpdated;
+        instance = this;
     }
 
-    private void OnDestroy()
+    private void Update()
     {
-        serverTime.OnValueChanged -= OnTimeUpdated;
+        if (!isRunning) return;
+
+        elapsedTime += Time.deltaTime;
+        UpdateTimerDisplay();
     }
 
-    void Update()
+    private void UpdateTimerDisplay()
     {
-        if (!IsServer || !isRunning) return;
-
-        serverTime.Value += Time.deltaTime;
-    }
-
-    private void OnTimeUpdated(float oldValue, float newValue)
-    {
-        int minutes = Mathf.FloorToInt(newValue / 60);
-        int seconds = Mathf.FloorToInt(newValue % 60);
+        int minutes = Mathf.FloorToInt(elapsedTime / 60f);
+        int seconds = Mathf.FloorToInt(elapsedTime % 60f);
         timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void StopTimerServerRpc()
+    
+    public void UpdateTimer(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60);
+        int seconds = Mathf.FloorToInt(time % 60);
+        timerText.text = $"{minutes:00}:{seconds:00}";
+    }
+    
+    public void StartClock()
+    {
+        isRunning = true;
+    }
+
+    public void StopClock()
     {
         isRunning = false;
+    }
+
+    public void ResetClock()
+    {
+        elapsedTime = 0f;
+        isRunning = false;
+        UpdateTimerDisplay();
+    }
+
+    public float GetElapsedTime()
+    {
+        return elapsedTime;
+    }
+    
+    public void SetElapsedTime(float time)
+    {
+        elapsedTime = time;
+        UpdateTimerDisplay();
     }
 }

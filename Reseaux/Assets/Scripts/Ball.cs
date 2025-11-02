@@ -1,21 +1,26 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class Ball : MonoBehaviour
+    public class Ball : NetworkBehaviour
     {
+        
+        
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject == gameObject)
                 return;
             if (other.gameObject.CompareTag("Hidder"))
             {
-                if (LifeManager.instance != null)
+                var playerNet = other.gameObject.GetComponent<PlayerNetwork>();
+                if (playerNet != null && playerNet.IsSpawned)
                 {
-                    LifeManager.instance.SetLife(LifeManager.instance.lifeValue - 1);
+                    playerNet.TakeDamageServerRpc(1);
                 }
             }
+
             Destroy(gameObject);
         }
     }
