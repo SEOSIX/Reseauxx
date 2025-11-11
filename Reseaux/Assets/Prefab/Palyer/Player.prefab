@@ -304,9 +304,15 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 10
   sprintSpeed: 15
-  jumpForce: 5
   lookSensitivity: 2
   rotationSmoothness: 10
+  jumpForce: 7
+  maxHeight: 12.28
+  gravityForce: 7
+  fallingForce: 8.41
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &8379445147967969899
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public class Gun : NetworkBehaviour
 {
     public static Gun instance { get; private set;}
     [SerializeField] private GameObject balls;
-    [SerializeField] private Transform zoneToInstanciate;
+    public Transform zoneToInstanciate;
     [SerializeField] private float shootingForce = 10f;
 
     [SerializeField] private int ballMax;
@@ -50,7 +50,6 @@ public class Gun : NetworkBehaviour
         {
             rb.AddForce(zoneToInstanciate.forward * shootingForce, ForceMode.Impulse);
         }
-
         ballMax--;
     }
 

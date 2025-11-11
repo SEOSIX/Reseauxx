@@ -1,18 +1,30 @@
 using System;
+using System.Numerics;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMovement : NetworkBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float sprintSpeed = 15f;
-    [SerializeField] private float jumpForce = 5f;
     
     [Header("Camera Control")]
     [SerializeField] private float lookSensitivity = 2f;
     [SerializeField] private float rotationSmoothness = 10f;
-
+    
+    [Header("Jump Control")]
+    [SerializeField] private float jumpForce= 20f;
+    [SerializeField] private float maxHeight;
+    [SerializeField] private float gravityForce;
+    [SerializeField] private float fallingForce;
+    [SerializeField] private LayerMask layerMask;
+    
+    
+    
     private Rigidbody rb;
     private Vector3 moveDirection;
     private Vector3 direction;
@@ -41,6 +53,7 @@ public class PlayerMovement : NetworkBehaviour
         if (!IsOwner) return;
         MoveInput();
         Sprint();
+        Jump(); 
     }
 
     private void FixedUpdate()
@@ -84,8 +97,14 @@ public class PlayerMovement : NetworkBehaviour
         float targetYaw = Camera.main.transform.eulerAngles.y;
         Quaternion targetRotation = Quaternion.Euler(0, targetYaw, 0);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * rotationSmoothness);
+        
+        Vector3 rot = Gun.instance.zoneToInstanciate.transform.eulerAngles;
+        rot.y = targetRotation.eulerAngles.y;
+        if (Gun.instance != null)
+            Gun.instance.zoneToInstanciate.transform.eulerAngles = rot;
     }
 
+    
     private void Sprint()
     {
         if (isHiding)
@@ -98,5 +117,43 @@ public class PlayerMovement : NetworkBehaviour
         {
             moveSpeed = 10f;
         }
+    }
+
+    private bool isJumping = false;
+    private float startY;
+
+    private void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isJumping = true;
+            startY = transform.position.y;
+            Debug.Log("Jumping");
+        }
+
+        if (isJumping)
+        {
+            if (transform.position.y < startY + maxHeight)
+                rb.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
+            else
+            {
+                rb.AddForce(Vector3.down * gravityForce * Time.deltaTime, ForceMode.Impulse);
+                isJumping = false;
+            }
+        }
+    }
+
+
+    private bool ISGrounded()
+    {
+        RaycastHit hit;
+        Vector3 origin = transform.position;
+        float distance = 0.2f;
+        Vector3 direction = Vector3.down; 
+        if (Physics.Raycast(origin, direction, out hit, distance, layerMask))
+        {
+            return true;
+        }
+        return false;
     }
 }
