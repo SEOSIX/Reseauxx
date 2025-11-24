@@ -27,9 +27,9 @@ public class NetwordkSetup : NetworkBehaviour
             {
                 seekerAvailiables = 0;
                 FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
-                cam.height = -0.1f;
-                cam.distance = 0.85f;
-                cam.xAxis = -0.17f;
+                cam.distance = -0.1f;
+                cam.height = 0.85f;
+                cam.xAxis = 0f;
                 Camera.main.fieldOfView = 70;
             }
             else
@@ -43,6 +43,10 @@ public class NetwordkSetup : NetworkBehaviour
         else
         {
             prefabToSpawn = Hidder;
+            LifeManager.instance.playerSlider.gameObject.SetActive(true);
+            LifeManager.instance.playerSlider.value = LifeManager.instance.playerSlider.maxValue;
+            Cursor.instance.cursorMain.SetActive(true);
+            Camera.main.fieldOfView = 70;
         }
         GameObject playerInstance = Instantiate(prefabToSpawn, Vector3.zero, Quaternion.identity);
         playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);

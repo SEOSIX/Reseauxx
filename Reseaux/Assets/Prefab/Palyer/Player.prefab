@@ -350,6 +350,7 @@ MonoBehaviour:
   - {fileID: 4300000, guid: 9c785a87f662c974db9241207a156048, type: 3}
   - {fileID: 4300000, guid: b242581fc7fd82a45b00226894da6bfb, type: 3}
   - {fileID: 4300000, guid: 5d640b36265eadc4a87d38682a77f08e, type: 3}
+  - {fileID: 4300000, guid: ce65141939545d440ac8591812208a12, type: 3}
   lifeValues: 090000001a0000001400000007000000
 --- !u!1 &4747089754919373770
 GameObject:
