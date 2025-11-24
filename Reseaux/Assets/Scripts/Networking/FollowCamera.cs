@@ -6,8 +6,8 @@ public class FollowCamera : MonoBehaviour
     private Transform target;
 
     [Header("Distance & Height")]
-    public float distance = 5f;
-    public float height = 2f;
+    public float distance = 3.25f;
+    public float height = 1.49f;
     public float xAxis;
 
     [Header("Rotation Camera")]

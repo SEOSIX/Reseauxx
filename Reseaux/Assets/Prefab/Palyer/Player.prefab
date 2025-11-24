@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3294028372451121197}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Hidder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -128,12 +128,11 @@ GameObject:
   - component: {fileID: -3446155525657064945}
   - component: {fileID: 7448046491511900434}
   - component: {fileID: 8789104765449345330}
-  - component: {fileID: 8379445147967969899}
   - component: {fileID: -6338550848801938631}
-  - component: {fileID: 7075183926011008010}
+  - component: {fileID: 8379445147967969899}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Hidder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -307,6 +306,20 @@ MonoBehaviour:
   jumpForce: 5
   lookSensitivity: 2
   rotationSmoothness: 10
+  ar: {fileID: 0}
+--- !u!114 &-6338550848801938631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4553876211116538519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4573ce8e7ef4b09b2b9ed382c48298e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &8379445147967969899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,38 +338,19 @@ MonoBehaviour:
   - {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   - {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
   - {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 4300000, guid: 7b44d744f6c37d441952d043e70b584c, type: 3}
+  - {fileID: 4300000, guid: e53378bffa67fba40888797a9016d1c4, type: 3}
+  - {fileID: 4300000, guid: 6d51a84963428cf4b9aaabea531eb90f, type: 3}
+  - {fileID: 4300000, guid: 7d8f2af59bc0a8b44846abf7025a3645, type: 3}
+  - {fileID: 4300002, guid: 8e46cfab629ec8249b48a57b735235dd, type: 3}
+  - {fileID: 4300000, guid: 43901d630c7174040b7ca11548b6d61b, type: 3}
+  - {fileID: 4300000, guid: b63bec55b1a6dfc4596b6da70ef02d16, type: 3}
+  - {fileID: 4300000, guid: 46032e2b9d73a4c46b7c0a8cfda58d57, type: 3}
+  - {fileID: 4300000, guid: 3200b0bd31ff3634b9425e04a691be13, type: 3}
+  - {fileID: 4300000, guid: 9c785a87f662c974db9241207a156048, type: 3}
+  - {fileID: 4300000, guid: b242581fc7fd82a45b00226894da6bfb, type: 3}
+  - {fileID: 4300000, guid: 5d640b36265eadc4a87d38682a77f08e, type: 3}
   lifeValues: 090000001a0000001400000007000000
---- !u!114 &-6338550848801938631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4553876211116538519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4573ce8e7ef4b09b2b9ed382c48298e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &7075183926011008010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4553876211116538519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f23ecfdbe13cca43af37ddf192c2825, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gun
-  ShowTopMostFoldoutHeaderGroup: 1
-  balls: {fileID: 1876377737594822289, guid: dbc437c86b8c1104dba2d879d62301c3, type: 3}
-  zoneToInstanciate: {fileID: 5640225128311279151}
-  shootingForce: 50
-  ballMax: 20000
-  fireRate: 0.01
 --- !u!1 &4747089754919373770
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,7 +362,7 @@ GameObject:
   - component: {fileID: 5640225128311279151}
   m_Layer: 0
   m_Name: Orientation
-  m_TagString: Untagged
+  m_TagString: Hidder
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

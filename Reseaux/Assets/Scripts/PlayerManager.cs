@@ -12,15 +12,12 @@ public class PlayerManager : NetworkBehaviour
 
     private readonly List<PlayerNetwork> connectedPlayers = new List<PlayerNetwork>();
     
-    
-    
     public override void OnNetworkSpawn()
     {
         if (IsServer)
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-        AssignRandomRoles();
     }
-    
+
     public void RegisterPlayer(PlayerNetwork player)
     {
         if (!connectedPlayers.Contains(player))
@@ -31,17 +28,5 @@ public class PlayerManager : NetworkBehaviour
     {
         connectedPlayers.RemoveAll(p => p.OwnerClientId == clientId);
         Debug.Log($"Player disconnected. Total: {connectedPlayers.Count}");
-    }
-
-    public void AssignRandomRoles()
-    {
-        if (!IsServer) return;
-        if (connectedPlayers.Count == 0) return;
-
-        foreach (var player in connectedPlayers)
-        {
-            string role = Random.value < 0.5f ? "Hidder" : "Seaker";
-            player.SetRoleServerRpc(role);
-        }
     }
 }

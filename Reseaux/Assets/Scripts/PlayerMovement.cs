@@ -12,14 +12,14 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Camera Control")]
     [SerializeField] private float lookSensitivity = 2f;
     [SerializeField] private float rotationSmoothness = 10f;
+    
+    [SerializeField] private Animator ar;
 
     private Rigidbody rb;
     private Vector3 moveDirection;
     private Vector3 direction;
 
     private bool isHiding = false;
-    
-    
     private float yaw;  
     private float pitch;
 
@@ -72,6 +72,17 @@ public class PlayerMovement : NetworkBehaviour
             moveDirection = transform.TransformDirection(direction);
             Vector3 move = moveDirection * moveSpeed * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + move);
+            if (ar != null)
+            {
+                ar.SetTrigger("Run");
+            }
+        }
+        else
+        {
+            if (ar != null)
+            {
+                ar.ResetTrigger("Run");
+            }
         }
     }
 

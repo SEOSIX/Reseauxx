@@ -11,7 +11,6 @@ namespace DefaultNamespace
     {
         public static PseudoManager instance { get; private set; }
         public InputField playerName;
-        
         public TextMeshProUGUI dislayConnexion;
 
         private void Awake()

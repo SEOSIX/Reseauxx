@@ -72,7 +72,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         elapsedTime.OnValueChanged += (oldTime, newTime) =>
         {
-            Clock.instance.UpdateTimer(newTime);
+                Clock.instance.UpdateTimer(newTime);
         };
         
         if (IsServer)
@@ -129,7 +129,7 @@ public class PlayerNetwork : NetworkBehaviour
         }
     }
     
-    private IEnumerator ServerClockLoop()
+    private IEnumerator ServerClockLoop() 
     {
         clockRunning = true;
         while (clockRunning)
@@ -147,6 +147,7 @@ public class PlayerNetwork : NetworkBehaviour
         gameObject.tag = newTag;
         SetRoleClientRpc(newTag);
     }
+    
     [ServerRpc(RequireOwnership = false)]
     public void SetPseudoServerRpc(string pseudo)
     {
@@ -176,15 +177,10 @@ public class PlayerNetwork : NetworkBehaviour
         if (!IsOwner) return;
         
         FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
-        if (gameObject.CompareTag("Seaker"))
+        if (gameObject.CompareTag("Seaker") && cam != null)
         {
-            if (cam != null)
-            {
-                cam.height = 0.35f;
-                cam.distance = 0.47f;
-            }
-            gameObject.GetComponent<PropMorpher>().enabled = false;
-            Gun.instance.enabled = true;
+            cam.height = 0.35f;
+            cam.distance = 0.47f;
             Camera.main.fieldOfView = 70;
         }
         else

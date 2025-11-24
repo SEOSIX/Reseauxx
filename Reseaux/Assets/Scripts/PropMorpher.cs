@@ -6,9 +6,9 @@ public class PropMorpher : NetworkBehaviour
     [SerializeField] private Mesh[] availableMeshes;
     [SerializeField] private int[] lifeValues;
     private LifeManager lifeManager;
-
     private GameObject lastHitObject;
     private Renderer playerRenderer;
+    private Material currentMaterial;
 
     
     public override void OnNetworkSpawn()
@@ -38,6 +38,9 @@ public class PropMorpher : NetworkBehaviour
     private void Start()
     {
         playerRenderer = GetComponentInChildren<Renderer>();
+        if (playerRenderer != null)
+            currentMaterial = playerRenderer.sharedMaterial;
+
         lifeManager = LifeManager.instance;
     }
 
@@ -158,7 +161,7 @@ public class PropMorpher : NetworkBehaviour
 
         var mr = copy.AddComponent<MeshRenderer>();
         if (playerRenderer != null)
-            mr.material = playerRenderer.sharedMaterial;
+            mr.material = currentMaterial;
 
         copy.transform.position = pos;
         copy.transform.rotation = rot;
@@ -185,6 +188,10 @@ public class PropMorpher : NetworkBehaviour
         {
             GetComponentInChildren<MeshFilter>().mesh = availableMeshes[index];
         }
+        
+        var mr = GetComponentInChildren<Renderer>();
+        if (mr != null && currentMaterial != null)
+            mr.material = currentMaterial;
     }
 
     private void ApplyLife(int index)

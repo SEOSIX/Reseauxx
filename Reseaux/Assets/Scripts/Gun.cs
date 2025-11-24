@@ -13,6 +13,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] private float fireRate = 0.5f;
     private float lastFireTime = 0f;
 
+    
     private void Awake()
     {
         instance = this;
@@ -26,6 +27,7 @@ public class Gun : NetworkBehaviour
         {
             TryShoot();
         }
+        RotateBallToCamera();
     }
 
     private void TryShoot()
@@ -44,14 +46,21 @@ public class Gun : NetworkBehaviour
 
         GameObject bullet = Instantiate(balls, zoneToInstanciate.position, zoneToInstanciate.rotation);
         bullet.GetComponent<NetworkObject>().Spawn();
-
+        
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.AddForce(zoneToInstanciate.forward * shootingForce, ForceMode.Impulse);
         }
-
         ballMax--;
     }
 
+    private void RotateBallToCamera()
+    {
+        if (Camera.main == null) return;
+
+        float targetYaw = Camera.main.transform.eulerAngles.y;
+        Quaternion targetRotation = Quaternion.Euler(0, targetYaw, 0);
+        zoneToInstanciate.transform.rotation = Quaternion.Slerp(zoneToInstanciate.transform.rotation, targetRotation, Time.fixedDeltaTime);
+    }
 }
