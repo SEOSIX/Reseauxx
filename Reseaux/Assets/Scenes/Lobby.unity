@@ -16536,7 +16536,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &540842998
 Transform:
   m_ObjectHideFlags: 0
@@ -16579,7 +16579,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -45937,7 +45936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetwordkSetup
   ShowTopMostFoldoutHeaderGroup: 1
-  Hidder: {fileID: 4553876211116538519, guid: 7f4c18e833b554a4e94d834dcb471766, type: 3}
+  Hidder: {fileID: 4553876211116538519, guid: 7c52dafaed12d4242acacd165011e31e, type: 3}
   Seaker: {fileID: 4553876211116538519, guid: 7f4c18e833b554a4e94d834dcb471766, type: 3}
   playerNetwork: {fileID: -433305410464077487, guid: 7f4c18e833b554a4e94d834dcb471766, type: 3}
 --- !u!1 &1496681790
