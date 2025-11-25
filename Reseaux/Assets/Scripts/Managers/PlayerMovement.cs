@@ -77,13 +77,6 @@ public class PlayerMovement : NetworkBehaviour
                 ar.SetTrigger("Run");
             }
         }
-        else
-        {
-            if (ar != null)
-            {
-                ar.ResetTrigger("Run");
-            }
-        }
     }
 
     private void RotatePlayerToCamera()

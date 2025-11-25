@@ -1,10 +1,12 @@
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PropMorpher : NetworkBehaviour
 {
     [SerializeField] private Mesh[] availableMeshes;
     [SerializeField] private int[] lifeValues;
+    [SerializeField] private Material[] avaiablesMaterials;
     private LifeManager lifeManager;
     private GameObject lastHitObject;
     private Renderer playerRenderer;
@@ -119,9 +121,12 @@ public class PropMorpher : NetworkBehaviour
             int meshIndex = System.Array.IndexOf(availableMeshes, mesh);
             var col = target.GetComponentInChildren<Collider>();
             Vector3 scale = target.transform.localScale;
+            
+            var targetRenderer = target.GetComponentInChildren<Renderer>();
+            var targetMaterial = targetRenderer != null ? targetRenderer.material : null;
 
             ApplyMorph(meshIndex, col, scale);
-            ApplyMorphClientRpc(meshIndex, scale);
+            ApplyMorphClientRpc(meshIndex, scale, targetMaterial.mainTexture.name);
         }
     }
 
@@ -139,10 +144,22 @@ public class PropMorpher : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void ApplyMorphClientRpc(int meshIndex, Vector3 scale)
+    private void ApplyMorphClientRpc(int meshIndex, Vector3 scale, string materialName)
     {
         ApplyMesh(meshIndex);
         transform.localScale = scale;
+
+        if (!string.IsNullOrEmpty(materialName))
+        {
+            Material mat = Resources.Load<Material>(materialName);
+            if (mat != null)
+            {
+                var r = GetComponentInChildren<Renderer>();
+                if (r != null)
+                    r.material = mat;
+            }
+        }
+
         ApplyLife(meshIndex);
     }
     
@@ -160,8 +177,7 @@ public class PropMorpher : NetworkBehaviour
         mf.mesh = meshToUse;
 
         var mr = copy.AddComponent<MeshRenderer>();
-        if (playerRenderer != null)
-            mr.material = currentMaterial;
+        mr.material = avaiablesMaterials[meshIndex];
 
         copy.transform.position = pos;
         copy.transform.rotation = rot;
@@ -173,7 +189,7 @@ public class PropMorpher : NetworkBehaviour
             duplicateLife.SetLife(lifeValues[meshIndex]);
         }
     }
-
+    
     private void ApplyMorph(int meshIndex, Collider col, Vector3 scale)
     {
         ApplyMesh(meshIndex);
@@ -188,10 +204,7 @@ public class PropMorpher : NetworkBehaviour
         {
             GetComponentInChildren<MeshFilter>().mesh = availableMeshes[index];
         }
-        
-        var mr = GetComponentInChildren<Renderer>();
-        if (mr != null && currentMaterial != null)
-            mr.material = currentMaterial;
+        ApplyMaterial(index);
     }
 
     private void ApplyLife(int index)
@@ -200,6 +213,18 @@ public class PropMorpher : NetworkBehaviour
         lifeManager.SetLife(lifeValues[index]);
     }
 
+    private void ApplyMaterial(int index)
+    {
+        if (index < 0 || index >= avaiablesMaterials.Length) return;
+
+        var r = GetComponentInChildren<Renderer>();
+        Material material = r.material;
+        if (r != null)
+        {
+            r.material.mainTexture = avaiablesMaterials[index].mainTexture;
+        }
+    }
+    
     private void HighlightObject(GameObject go)
     {
         if (lastHitObject == go) return;

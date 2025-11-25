@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8264680323626441328}
   - component: {fileID: 5449094647806521923}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.029_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -625,7 +625,7 @@ GameObject:
   m_Component:
   - component: {fileID: 631908146552820828}
   - component: {fileID: 4731330866288903052}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.013_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -727,7 +727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7622736942684127876}
   - component: {fileID: 271494686905521573}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.012_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1498,7 +1498,7 @@ GameObject:
   m_Component:
   - component: {fileID: 433734041636000311}
   - component: {fileID: 5724150464994407346}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.028_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1779,7 +1779,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5284070217810631298}
   - component: {fileID: 314269459958808653}
-  m_Layer: 4
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.022_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1906,7 +1906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 806749661274325699}
   - component: {fileID: 589251797602256005}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.017_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2822,8 +2822,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   ShowTopMostFoldoutHeaderGroup: 1
-  moveSpeed: 10
-  sprintSpeed: 15
+  moveSpeed: 4.92
+  sprintSpeed: 8.88
   jumpForce: 5
   lookSensitivity: 2
   rotationSmoothness: 10
@@ -2869,7 +2869,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1319974640167239060}
   - component: {fileID: 2594994705844381527}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.014_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3386,7 +3386,7 @@ GameObject:
   m_Component:
   - component: {fileID: 525427375421369507}
   - component: {fileID: 2169139720408760998}
-  m_Layer: 4
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.026_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3480,7 +3480,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3670647616874630072}
   - component: {fileID: 5466597404120469303}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.018_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3640,7 +3640,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4105166776315390650}
   - component: {fileID: 3203090354208868770}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.020_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3859,7 +3859,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4980662974413608597}
   - component: {fileID: 4814987014618656190}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fullbody_elite_pmc_assault_a_black_LOD0_SEModelMesh.010_SEModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

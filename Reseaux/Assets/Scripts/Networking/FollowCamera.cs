@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
@@ -16,6 +17,11 @@ public class FollowCamera : MonoBehaviour
     private float pitch;
     public float pitchMin = -40f;
     public float pitchMax = 85f;
+    public Transform cameraTransform;
+    
+    private RaycastHit hit;
+    private Vector3 camera_Offet;
+    
 
     void LateUpdate()
     {
