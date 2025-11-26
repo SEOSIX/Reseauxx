@@ -29,12 +29,6 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
-
-    private NetworkVariable<Color> playerColor = new(
-        Color.white,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
     
     private NetworkVariable<FixedString32Bytes> playerPseudo = new(
         "Unknown",
@@ -83,49 +77,21 @@ public class PlayerNetwork : NetworkBehaviour
         }
         if (playerRenderer == null)
             playerRenderer = GetComponentInChildren<Renderer>();
-
-        if (movement == null)
-            movement = GetComponent<PlayerMovement>();
-
-        if (propMorpher == null)
-            propMorpher = GetComponent<PropMorpher>();
-
-        playerColor.OnValueChanged += (oldColor, newColor) =>
-        {
-            if (playerRenderer != null)
-                playerRenderer.material.color = newColor;
-        };
-
+        
         if (IsServer)
         {
             playerManager.RegisterPlayer(this);
         }
-
-        if (playerRenderer != null)
-            playerRenderer.material.color = playerColor.Value;
-
+        
         if (IsOwner)
         {
-            if (movement != null)
-                movement.enabled = true;
-
-            if (propMorpher != null)
-                propMorpher.enabled = true;
-
             FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
             if (cam != null)
                 cam.SetTarget(transform);
-            
+
             string pseudo = PseudoManager.instance.playerName.text; 
             SetPseudoServerRpc(pseudo);
-        }
-        else
-        {
-            if (movement != null)
-                movement.enabled = false;
-
-            if (propMorpher != null)
-                propMorpher.enabled = false;
+            ApplyRoleCameraSettings();
         }
     }
     
@@ -140,14 +106,6 @@ public class PlayerNetwork : NetworkBehaviour
     }
 
     #region server RPC
-
-    [ServerRpc(RequireOwnership = false)]
-    public void SetRoleServerRpc(string newTag)
-    {
-        gameObject.tag = newTag;
-        SetRoleClientRpc(newTag);
-    }
-    
     [ServerRpc(RequireOwnership = false)]
     public void SetPseudoServerRpc(string pseudo)
     {
@@ -168,31 +126,6 @@ public class PlayerNetwork : NetworkBehaviour
     
     #endregion
     
-    
-    [ClientRpc]
-    private void SetRoleClientRpc(string newTag)
-    {
-        gameObject.tag = newTag;
-
-        if (!IsOwner) return;
-        
-        FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
-        if (gameObject.CompareTag("Seaker") && cam != null)
-        {
-            cam.height = 0.35f;
-            cam.distance = 0.47f;
-            Camera.main.fieldOfView = 70;
-        }
-        else
-        {
-            gameObject.GetComponent<PropMorpher>().enabled = true;
-            Gun.instance.enabled = false;
-            LifeManager.instance.playerSlider.gameObject.SetActive(true);
-            LifeManager.instance.playerSlider.value = LifeManager.instance.playerSlider.maxValue;
-            Cursor.instance.cursorMain.SetActive(true);
-            Camera.main.fieldOfView = 70;
-        }
-    }
     [ClientRpc]
     private void UpdateClockClientRpc(float time)
     {
@@ -202,6 +135,40 @@ public class PlayerNetwork : NetworkBehaviour
         }
     }
     
+    private void ApplyRoleCameraSettings()
+    {
+        FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
+        if (cam == null)
+        {
+            return;
+        }
+        bool isSeaker = gameObject.CompareTag("Seaker");
+
+        if (isSeaker)
+        {
+            cam.height = 1.42f;
+            cam.distance = 0.8f;
+            Camera.main.fieldOfView = 70;
+            LifeManager.instance.playerSlider.gameObject.SetActive(false);
+            Cursor.instance.cursorMain.SetActive(false);
+        }
+        else
+        {
+            if (LifeManager.instance != null)
+            {
+                LifeManager.instance.playerSlider.gameObject.SetActive(true);
+                LifeManager.instance.playerSlider.value = LifeManager.instance.playerSlider.maxValue;
+            }
+
+            if (Cursor.instance != null)
+                Cursor.instance.cursorMain.SetActive(true);
+
+            cam.height = 1.49f;
+            cam.distance = 3.24f;
+            Camera.main.fieldOfView = 70;
+        }
+    }
+
 }
 
 public struct PlayerData : INetworkSerializable

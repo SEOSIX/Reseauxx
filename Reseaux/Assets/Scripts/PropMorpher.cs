@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,7 +12,6 @@ public class PropMorpher : NetworkBehaviour
     private GameObject lastHitObject;
     private Renderer playerRenderer;
     private Material currentMaterial;
-
     
     public override void OnNetworkSpawn()
     {
@@ -35,8 +35,6 @@ public class PropMorpher : NetworkBehaviour
             }
         }
     }
-
-    
     private void Start()
     {
         playerRenderer = GetComponentInChildren<Renderer>();
@@ -182,12 +180,6 @@ public class PropMorpher : NetworkBehaviour
         copy.transform.position = pos;
         copy.transform.rotation = rot;
         copy.isStatic = true;
-        
-        if (lifeManager != null && lifeValues != null && meshIndex >= 0 && meshIndex < lifeValues.Length)
-        {
-            var duplicateLife = copy.AddComponent<LifeManager>();
-            duplicateLife.SetLife(lifeValues[meshIndex]);
-        }
     }
     
     private void ApplyMorph(int meshIndex, Collider col, Vector3 scale)

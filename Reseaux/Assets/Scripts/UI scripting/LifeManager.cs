@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,5 +35,13 @@ public class LifeManager : MonoBehaviour
         }
         if (lifeText != null)
             lifeText.text = $"{lifeValue} / {playerSlider.maxValue}";
+    }
+
+    public void CheckLifePlayer()
+    {
+        if (lifeValue <= Mathf.Abs(0f))
+        {
+            PlayerManager.hidders--;
+        }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
@@ -17,30 +16,61 @@ public class FollowCamera : MonoBehaviour
     private float pitch;
     public float pitchMin = -40f;
     public float pitchMax = 85f;
+
     public Transform cameraTransform;
-    
-    private RaycastHit hit;
-    private Vector3 camera_Offet;
-    
+
+    [Header("Anti-Clipping")]
+    public float rayRadius = 0.2f;   
+    public LayerMask collisionMask;  
+
+    private float currentDistance;
+
+    void Start()
+    {
+        currentDistance = distance;
+    }
 
     void LateUpdate()
     {
-        if (target == null)
-        {
-            return;
-        }
+        if (target == null) return;
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         yaw += mouseX;
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
-        Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
-        Vector3 position = target.position - rotation * Vector3.forward * distance + Vector3.up * height + Vector3.right * xAxis;
 
+        Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
+        Vector3 desiredPosition =
+            target.position
+            - rotation * Vector3.forward * distance
+            + Vector3.up * height
+            + Vector3.right * xAxis;
+
+        Vector3 direction = desiredPosition - target.position;
+        float desiredDistance = direction.magnitude;
+
+        if (Physics.SphereCast(target.position, rayRadius, direction.normalized, out RaycastHit hit, desiredDistance, collisionMask))
+        {
+            currentDistance = hit.distance;
+        }
+        else
+        {
+            currentDistance = Mathf.Lerp(currentDistance, distance, Time.deltaTime * 5f);
+        }
+
+        Vector3 finalPosition =
+            target.position
+            - rotation * Vector3.forward * currentDistance
+            + Vector3.up * height
+            + Vector3.right * xAxis;
         transform.rotation = rotation;
-        transform.position = position;
+        transform.position = finalPosition;
     }
 
-    public void SetTarget(Transform newTarget) { target = newTarget;}
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
 }

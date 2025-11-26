@@ -70,12 +70,17 @@ public class PlayerMovement : NetworkBehaviour
         if (direction.magnitude > 0.1f)
         {
             moveDirection = transform.TransformDirection(direction);
-            Vector3 move = moveDirection * moveSpeed * Time.fixedDeltaTime;
-            rb.MovePosition(rb.position + move);
+            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
             if (ar != null)
             {
                 ar.SetTrigger("Run");
+                ar.ResetTrigger("Idle");
             }
+        }
+        else if (ar != null)
+        {
+            ar.ResetTrigger("Run");
+            ar.SetTrigger("Idle");
         }
     }
 
