@@ -14,6 +14,10 @@ public class PlayerManager : NetworkBehaviour
     public static List<PlayerNetwork> connectedPlayers = new List<PlayerNetwork>();
 
     public static int hidders = 0;
+
+    public GameObject hidderUI;
+   
+    
     
     private void OnEnable()
     {
@@ -24,6 +28,14 @@ public class PlayerManager : NetworkBehaviour
     {
         if (IsServer)
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        if (!IsOwner && hidderUI != null)
+            hidderUI.SetActive(false);
+        else
+        {
+            if (hidderUI != null)
+                hidderUI.SetActive(true);
+        }
+        AddHiddersToList();
     }
 
     public void RegisterPlayer(PlayerNetwork player)
@@ -31,14 +43,12 @@ public class PlayerManager : NetworkBehaviour
         if (!connectedPlayers.Contains(player))
         {
             connectedPlayers.Add(player);
-            AddHiddersToList();
         }
     }
 
     private void OnClientDisconnected(ulong clientId)
     {
         connectedPlayers.RemoveAll(p => p.OwnerClientId == clientId);
-        Debug.Log($"Players lefts {connectedPlayers.Count}");
     }
     
     public void AddHiddersToList()
@@ -47,7 +57,7 @@ public class PlayerManager : NetworkBehaviour
         {
             if (CompareTag("Hidder"))
             {
-                hidders++;
+                hidders += 1;
                 Debug.Log(hidders);
             }
         }

@@ -6,8 +6,6 @@ namespace DefaultNamespace
 {
     public class Ball : NetworkBehaviour
     {
-        
-        
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject == gameObject)
@@ -18,9 +16,16 @@ namespace DefaultNamespace
                 if (playerNet != null && playerNet.IsSpawned)
                 {
                     playerNet.TakeDamageServerRpc(1);
+                    LifeManager.instance.CheckLifePlayer();
                 }
             }
 
+            DestroyBallServerRpc();
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void DestroyBallServerRpc()
+        {
             Destroy(gameObject);
         }
     }

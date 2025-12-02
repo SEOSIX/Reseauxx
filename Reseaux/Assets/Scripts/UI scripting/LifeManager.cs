@@ -7,41 +7,47 @@ using UnityEngine.UI;
 public class LifeManager : MonoBehaviour
 {
     public static LifeManager instance { get; private set; }
-    
+
     public int lifeValue;
     public Slider playerSlider;
     [SerializeField] private TextMeshProUGUI lifeText;
-
+    [SerializeField] private PropMorpher propMorpher;
+    [SerializeField] private Canvas canvasPlayer;
 
     private void Awake()
     {
         instance = this;
-        lifeValue = (int)playerSlider.value;
+        propMorpher.enabled = true;
+        canvasPlayer.enabled = true;
+        
     }
 
-    private void Update()
+    public void SetMaxLife(int max)
     {
-        lifeValue = (int)playerSlider.value;
+        if (playerSlider != null)
+            playerSlider.maxValue = max;
     }
-
 
     public void SetLife(int value)
     {
         lifeValue = value;
+    
         if (playerSlider != null)
-        {
             playerSlider.value = lifeValue;
-            playerSlider.maxValue = lifeValue;
-        }
+
         if (lifeText != null)
             lifeText.text = $"{lifeValue} / {playerSlider.maxValue}";
     }
-
     public void CheckLifePlayer()
     {
-        if (lifeValue <= Mathf.Abs(0f))
+        if (playerSlider.value <= Mathf.Abs(0f))
         {
-            PlayerManager.hidders--;
+            var playerNet = gameObject.GetComponent<PlayerNetwork>();
+            Debug.Log(PlayerManager.hidders);
+            PlayerManager.hidders -= 1;
+            propMorpher.enabled = false;
+            canvasPlayer.enabled = false;
+            playerNet.DestroyColliderServerRpc();
         }
     }
 }

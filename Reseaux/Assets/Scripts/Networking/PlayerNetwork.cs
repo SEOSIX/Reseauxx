@@ -36,7 +36,6 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
     
-    
     private NetworkVariable<float> elapsedTime = new NetworkVariable<float>(
         0f,
         NetworkVariableReadPermission.Everyone,
@@ -46,27 +45,24 @@ public class PlayerNetwork : NetworkBehaviour
     private bool clockRunning = false;
     
     public string PlayerPseudo => playerPseudo.Value.ToString();
+    public int CurrentLife => playerLife.Value;
 
 
     public override void OnNetworkSpawn()
     {
         playerPseudo.OnValueChanged += (oldPseudo, newPseudo) =>
         {
-            Debug.Log($"Pseudo mis à jour : {newPseudo}");
             StartCoroutine(PseudoManager.instance.DebugDislayConnexion(newPseudo.ToString()));
         };
-        
+       
         playerLife.OnValueChanged += (oldLife, newLife) =>
         {
-            if (IsOwner && LifeManager.instance != null)
-            {
-                LifeManager.instance.SetLife(newLife);
-            }
+            OnLifeChanged(oldLife, newLife);
         };
 
         elapsedTime.OnValueChanged += (oldTime, newTime) =>
         {
-                Clock.instance.UpdateTimer(newTime);
+            Clock.instance.UpdateTimer(newTime);
         };
         
         if (IsServer)
@@ -75,25 +71,33 @@ public class PlayerNetwork : NetworkBehaviour
             playerManager.RegisterPlayer(this);
             StartCoroutine(ServerClockLoop());
         }
+        
         if (playerRenderer == null)
             playerRenderer = GetComponentInChildren<Renderer>();
-        
-        if (IsServer)
-        {
-            playerManager.RegisterPlayer(this);
-        }
         
         if (IsOwner)
         {
             FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
             if (cam != null)
                 cam.SetTarget(transform);
-
-            string pseudo = PseudoManager.instance.playerName.text; 
-            SetPseudoServerRpc(pseudo);
             ApplyRoleCameraSettings();
+           
+            if (LifeManager.instance != null)
+            {
+                LifeManager.instance.SetLife(playerLife.Value);
+            }
         }
     }
+   
+    private void OnLifeChanged(int oldLife, int newLife)
+    {
+        if (IsOwner && LifeManager.instance != null)
+        {
+            LifeManager.instance.SetLife(newLife);
+        }
+    }
+    
+   
     
     private IEnumerator ServerClockLoop() 
     {
@@ -111,21 +115,36 @@ public class PlayerNetwork : NetworkBehaviour
     {
         playerPseudo.Value = pseudo;
     }
+    
     [ServerRpc(RequireOwnership = false)]
     public void TakeDamageServerRpc(int damage)
     {
+        int oldLife = playerLife.Value;
         playerLife.Value = Mathf.Max(0, playerLife.Value - damage);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SetLifeServerRpc(int newLife)
+    {
+        playerLife.Value = newLife;
+    }
     
     [ServerRpc(RequireOwnership = false)]
     public void StopClockServerRpc()
     {
         clockRunning = false;
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyColliderServerRpc()
+    {
+        DesactivateColliderForOthersClientRpc();
+    }
+    
     
     #endregion
     
+    #region Client RPC
     [ClientRpc]
     private void UpdateClockClientRpc(float time)
     {
@@ -134,41 +153,60 @@ public class PlayerNetwork : NetworkBehaviour
             Clock.instance.SetElapsedTime(time);
         }
     }
+
+    [ClientRpc]
+    public void DesactvatePlayerDeadClientRpc()
+    {
+            if (IsOwner)
+            {
+                var color = playerRenderer.material.color;
+                color.a = 0.2f;
+                playerRenderer.material.color = color;
+            }
+            else
+            {
+                MeshRenderer meshRenderer = playerRenderer.GetComponent<MeshRenderer>();
+                MeshFilter meshFilter = playerRenderer.GetComponent<MeshFilter>();
+
+                if (meshRenderer != null)
+                    meshRenderer.enabled = false;
+            }
+    }
+    
+    [ClientRpc]
+    private void DesactivateColliderForOthersClientRpc()
+    {
+        if (IsOwner)
+            return;
+
+        Collider col = GetComponentInChildren<Collider>();
+        if (col != null)
+            Destroy(col);
+        DesactvatePlayerDeadClientRpc();
+    }
+    #endregion
     
     private void ApplyRoleCameraSettings()
     {
         FollowCamera cam = Camera.main?.GetComponent<FollowCamera>();
         if (cam == null)
-        {
             return;
-        }
+        
         bool isSeaker = gameObject.CompareTag("Seaker");
 
         if (isSeaker)
         {
-            cam.height = 1.42f;
-            cam.distance = 0.8f;
-            Camera.main.fieldOfView = 70;
-            LifeManager.instance.playerSlider.gameObject.SetActive(false);
-            Cursor.instance.cursorMain.SetActive(false);
+            cam.height = 1.06f;
+            cam.distance = 2.2f;
+            Camera.main.fieldOfView = 80;
         }
         else
         {
-            if (LifeManager.instance != null)
-            {
-                LifeManager.instance.playerSlider.gameObject.SetActive(true);
-                LifeManager.instance.playerSlider.value = LifeManager.instance.playerSlider.maxValue;
-            }
-
-            if (Cursor.instance != null)
-                Cursor.instance.cursorMain.SetActive(true);
-
             cam.height = 1.49f;
             cam.distance = 3.24f;
-            Camera.main.fieldOfView = 70;
+            Camera.main.fieldOfView = 80;
         }
     }
-
 }
 
 public struct PlayerData : INetworkSerializable

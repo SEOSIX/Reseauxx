@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Gun : NetworkBehaviour
 {
+    
+    private NetworkVariable<Quaternion> gunRotation = new NetworkVariable<Quaternion>(
+        writePerm: NetworkVariableWritePermission.Owner
+    );
+    
     public static Gun instance { get; private set;}
     [SerializeField] private GameObject balls;
     public Transform zoneToInstanciate;
@@ -28,6 +33,15 @@ public class Gun : NetworkBehaviour
             TryShoot();
         }
         RotateBallToCamera();
+        
+        if (IsOwner)
+        {
+            gunRotation.Value = zoneToInstanciate.rotation;
+        }
+        if (!IsOwner)
+        {
+            zoneToInstanciate.rotation = gunRotation.Value;
+        }
     }
 
     private void TryShoot()
@@ -62,5 +76,9 @@ public class Gun : NetworkBehaviour
         float targetYaw = Camera.main.transform.eulerAngles.y;
         Quaternion targetRotation = Quaternion.Euler(0, targetYaw, 0);
         zoneToInstanciate.transform.rotation = Quaternion.Slerp(zoneToInstanciate.transform.rotation, targetRotation, Time.fixedDeltaTime);
+        float pitch = Camera.main.transform.eulerAngles.x;
+        Quaternion rot = Quaternion.Euler(pitch, zoneToInstanciate.eulerAngles.y, 0);
+        zoneToInstanciate.rotation = rot;
+        gunRotation.Value = rot;
     }
 }

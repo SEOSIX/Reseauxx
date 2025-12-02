@@ -12,6 +12,8 @@ public class Clock : MonoBehaviour
     private float elapsedTime = 0f;
     private bool isRunning = false;
 
+    [SerializeField] private GameObject hidersWin_UI;
+    public GameObject cubeSeaker;
     private void Awake()
     {
         instance = this;
@@ -23,6 +25,10 @@ public class Clock : MonoBehaviour
 
         elapsedTime += Time.deltaTime;
         UpdateTimerDisplay();
+        Debug.Log(elapsedTime);
+        SetWinner();
+        if (elapsedTime >= 10)
+            WaitHiding();
     }
 
     private void UpdateTimerDisplay()
@@ -66,5 +72,20 @@ public class Clock : MonoBehaviour
     {
         elapsedTime = time;
         UpdateTimerDisplay();
+    }
+
+    private void SetWinner()
+    {
+        if (elapsedTime >= 120 )
+        {
+            hidersWin_UI.SetActive(true);
+        }
+        else
+            hidersWin_UI.SetActive(false);
+    }
+
+    private void WaitHiding()
+    {
+        cubeSeaker.SetActive(false);
     }
 }

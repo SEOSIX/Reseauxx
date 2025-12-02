@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,7 +14,11 @@ public class PropMorpher : NetworkBehaviour
     private GameObject lastHitObject;
     private Renderer playerRenderer;
     private Material currentMaterial;
+
+
+    private List<GameObject> copies = new List<GameObject>();
     
+    private List<int> meshDuplicated = new List<int>();
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -164,22 +170,21 @@ public class PropMorpher : NetworkBehaviour
     [ClientRpc]
     private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot)
     {
-        Mesh meshToUse = (availableMeshes != null && meshIndex >= 0 && meshIndex < availableMeshes.Length)
-            ? availableMeshes[meshIndex]
-            : (availableMeshes != null && availableMeshes.Length > 0 ? availableMeshes[0] : null);
-
-        if (meshToUse == null) return;
-
         GameObject copy = new GameObject("MeshCopy");
+
         var mf = copy.AddComponent<MeshFilter>();
-        mf.mesh = meshToUse;
+        mf.mesh = availableMeshes[meshIndex];
 
         var mr = copy.AddComponent<MeshRenderer>();
         mr.material = avaiablesMaterials[meshIndex];
 
-        copy.transform.position = pos;
-        copy.transform.rotation = rot;
+        copy.transform.SetPositionAndRotation(pos, rot);
         copy.isStatic = true;
+
+        copies.Add(copy);
+        meshDuplicated.Add(1);
+
+        StartCoroutine(DestroyCopyAfterDelay(copy));
     }
     
     private void ApplyMorph(int meshIndex, Collider col, Vector3 scale)
@@ -199,11 +204,20 @@ public class PropMorpher : NetworkBehaviour
         ApplyMaterial(index);
     }
 
-    private void ApplyLife(int index)
+    public void ApplyLife(int index)
     {
-        if (lifeManager == null || lifeValues == null || index < 0 || index >= lifeValues.Length) return;
-        lifeManager.SetLife(lifeValues[index]);
+    if (lifeManager == null) return;
+    
+    int newLife = lifeValues[index];
+        lifeManager.playerSlider.maxValue = lifeValues[index]; 
+        lifeManager.SetLife(lifeValues[index]);        
+        lifeManager.SetMaxLife(lifeValues[index]);
+        if (IsOwner)
+        {
+            GetComponent<PlayerNetwork>().SetLifeServerRpc(newLife);
+        }
     }
+
 
     private void ApplyMaterial(int index)
     {
@@ -232,6 +246,18 @@ public class PropMorpher : NetworkBehaviour
             lastHitObject.GetComponent<Renderer>().material.color = Color.white;
             lastHitObject = null;
         }
+    }
+
+    private IEnumerator DestroyCopyAfterDelay(GameObject copy)
+    {
+        yield return new WaitForSeconds(15);
+
+        if (copies.Contains(copy))
+            copies.Remove(copy);
+
+        Destroy(copy);
+        if (meshDuplicated.Count > 0)
+            meshDuplicated.RemoveAt(0);
     }
 
     private void CopyCollider(Collider source)
