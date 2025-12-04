@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 320116862113697170}
-  - component: {fileID: 7480309334541854418}
   - component: {fileID: 1827372215610930493}
   - component: {fileID: 4257694642418450046}
   m_Layer: 0
@@ -34,20 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7480309334541854418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872831707464998857}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6fe68af5bd0484aaa4b88328fa33105, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.PseudoManager
-  playerName: {fileID: 0}
-  dislayConnexion: {fileID: 0}
 --- !u!114 &1827372215610930493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,3 +73,5 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   Hidder: {fileID: 4553876211116538519, guid: 7c52dafaed12d4242acacd165011e31e, type: 3}
   Seaker: {fileID: 4553876211116538519, guid: 7f4c18e833b554a4e94d834dcb471766, type: 3}
+  spawnerSeaker: {fileID: 0}
+  spawnerHider: {fileID: 0}
