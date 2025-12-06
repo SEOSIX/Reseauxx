@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,8 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Sprint")] 
     [SerializeField] private Slider sprintBarr;
     [SerializeField] private float sprintBarrValue;
+    public float minToSprint;
+    
     
     [Header("Camera Control")]
     [SerializeField] private float lookSensitivity = 2f;
@@ -82,11 +85,6 @@ public class PlayerMovement : NetworkBehaviour
         {
             isHiding = !isHiding;
         }
-
-		if(sprintBarr != null)
-		{
-        	canSprint = sprintBarr.value >= sprintBarrValue;
-		}
         stepClimb();
     }
 
@@ -144,37 +142,46 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Sprint()
     {
+        bool isSprinting = false;
         if (isHiding) return;
-
         if (sprintBarr == null)
         {
             moveSpeed = baseSpeed;
             return;
         }
-
-        if (!canSprint)
-            return;
         
-        Camera camera = Camera.main;
+        if (sprintBarr.value <= 0.01f)
+            canSprint = false;
 
-        bool wantsToSprint = Input.GetKey(KeyCode.LeftShift);
+        if (canSprint && sprintBarr.value >= minToSprint)
+            canSprint = true;
 
-        if (wantsToSprint && canSprint)
+        bool isTryingToSprint = Input.GetKey(KeyCode.LeftShift);
+        
+        if (isTryingToSprint && canSprint)
         {
             moveSpeed = sprintSpeed;
-            sprintBarr.value -= 20f * Time.deltaTime;
+            sprintBarr.value -= 5f * Time.deltaTime;
+            if (sprintBarr.value <= 0 && canSprint)
+            {
+                canSprint = false;
+                moveSpeed = baseSpeed;
+            }
         }
         else
         {
+            if (sprintBarr.value != 1f)
+            {
+                sprintBarr.value += 5 * Time.deltaTime;
+            }
             moveSpeed = baseSpeed;
-            sprintBarr.value += 10f * Time.deltaTime; 
         }
-        sprintBarr.value = Mathf.Clamp(sprintBarr.value, 0f, sprintBarr.maxValue);
-        
-        float targetFOV = wantsToSprint && canSprint ? 100f : 80f;
-        camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, targetFOV, Time.deltaTime * 6f);
-    }
 
+        sprintBarr.value = Mathf.Clamp(sprintBarr.value, 0f, sprintBarr.maxValue);
+
+        float targetFOV = (isTryingToSprint && canSprint && sprintBarr.value > 0) ? 100f : 80f;
+        Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, targetFOV, Time.deltaTime * 6f);
+    }
     private void UpdateAnimator(bool running)
     {
         if (ar == null) return;

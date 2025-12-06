@@ -16,13 +16,6 @@ public class PlayerManager : NetworkBehaviour
     public static int hidders = 0;
 
     public GameObject hidderUI;
-   
-    
-    
-    private void OnEnable()
-    {
-        AddHiddersToList();
-    }
 
     public override void OnNetworkSpawn()
     {
@@ -53,13 +46,15 @@ public class PlayerManager : NetworkBehaviour
     
     public void AddHiddersToList()
     {
-        for (int i = 0; i < connectedPlayers.Count; i++)
+        hidders = 0;
+
+        foreach (var player in connectedPlayers)
         {
-            if (CompareTag("Hidder"))
+            if (player.CompareTag("Hidder"))
             {
-                hidders += 1;
-                Debug.Log(hidders);
+                hidders++;
             }
         }
+        Debug.Log("Hidders = " + hidders);
     }
 }

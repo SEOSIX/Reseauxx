@@ -4,7 +4,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Clock : NetworkBehaviour
+public class Clock : MonoBehaviour
 {
     public static Clock instance { get; private set; }
 
@@ -21,9 +21,10 @@ public class Clock : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsServer) return;
+        
         if (!isRunning) return;
         elapsedTime += Time.deltaTime;
+        
         UpdateTimerDisplay();
         Debug.Log(elapsedTime);
         SetWinner();
