@@ -2783,7 +2783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1719244905
+  GlobalObjectIdHash: 4255654358
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -2857,6 +2857,7 @@ MonoBehaviour:
   movement: {fileID: 8789104765449345330}
   propMorpher: {fileID: 0}
   cameraFollow: {fileID: 0}
+  EXPLOSION: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   baseLife: 100
   playerManager: {fileID: -6338550848801938631}
 --- !u!114 &-3446155525657064945
@@ -2927,6 +2928,7 @@ MonoBehaviour:
   stepSmooth: 0.1
   sprintBarr: {fileID: 0}
   sprintBarrValue: 0
+  minToSprint: 0
   lookSensitivity: 2
   rotationSmoothness: 10
   ar: {fileID: 6865841244152490433}

@@ -12,6 +12,7 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private PropMorpher propMorpher;
     [SerializeField] private FollowCamera cameraFollow;
+    [SerializeField] private GameObject EXPLOSION;
     
     [Header("Stats")]
     [SerializeField] private float baseLife = 100f;
@@ -94,6 +95,7 @@ public class PlayerNetwork : NetworkBehaviour
         if (IsOwner && LifeManager.instance != null)
         {
             LifeManager.instance.SetLife(newLife);
+            LifeManager.instance.CheckLifePlayer();
         }
     }
     
@@ -139,6 +141,11 @@ public class PlayerNetwork : NetworkBehaviour
     public void DestroyColliderServerRpc()
     {
         DesactivateColliderForOthersClientRpc();
+
+        GameObject explosion = Instantiate(EXPLOSION, transform.position, transform.rotation.normalized);
+        var netObj = explosion.GetComponent<NetworkObject>();
+        if (netObj != null)
+            netObj.Spawn();
     }
     
     
@@ -170,15 +177,19 @@ public class PlayerNetwork : NetworkBehaviour
 
                 if (meshRenderer != null)
                     meshRenderer.enabled = false;
+                if (meshFilter != null)
+                {
+                    meshFilter.sharedMesh = null;
+                }
             }
     }
     
     [ClientRpc]
     private void DesactivateColliderForOthersClientRpc()
     {
-        if (IsOwner)
+        if(IsOwner)
             return;
-
+        
         Collider col = GetComponentInChildren<Collider>();
         if (col != null)
             Destroy(col);
@@ -202,8 +213,8 @@ public class PlayerNetwork : NetworkBehaviour
         }
         else
         {
-            cam.height = 1.49f;
-            cam.distance = 2.57f;
+            cam.height = 2.57f;
+            cam.distance = 3.24f;
             Camera.main.fieldOfView = 80;
         }
     }

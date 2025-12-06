@@ -15,11 +15,10 @@ namespace DefaultNamespace
                 var playerNet = other.gameObject.GetComponent<PlayerNetwork>();
                 if (playerNet != null && playerNet.IsSpawned)
                 {
-                    playerNet.TakeDamageServerRpc(1);
                     LifeManager.instance.CheckLifePlayer();
+                    playerNet.TakeDamageServerRpc(1);
                 }
             }
-
             DestroyBallServerRpc();
         }
 
