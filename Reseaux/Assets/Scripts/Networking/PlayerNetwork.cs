@@ -203,7 +203,7 @@ public class PlayerNetwork : NetworkBehaviour
         else
         {
             cam.height = 1.49f;
-            cam.distance = 3.24f;
+            cam.distance = 2.57f;
             Camera.main.fieldOfView = 80;
         }
     }
