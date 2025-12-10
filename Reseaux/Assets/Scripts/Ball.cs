@@ -1,31 +1,17 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace DefaultNamespace
+public class Ball : MonoBehaviour
 {
-    public class Ball : NetworkBehaviour
-    {
-        private void OnCollisionEnter(Collision other)
-        {
-            if (other.gameObject == gameObject)
-                return;
-            if (other.gameObject.CompareTag("Hidder"))
-            {
-                var playerNet = other.gameObject.GetComponent<PlayerNetwork>();
-                if (playerNet != null && playerNet.IsSpawned)
-                {
-                    LifeManager.instance.CheckLifePlayer();
-                    playerNet.TakeDamageServerRpc(1);
-                }
-            }
-            DestroyBallServerRpc();
-        }
+    [SerializeField] private float lifeTime = 5f;
 
-        [ServerRpc(RequireOwnership = false)]
-        private void DestroyBallServerRpc()
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Hidder"))
         {
-            Destroy(gameObject);
+            PlayerNetwork player = other.gameObject.GetComponent<PlayerNetwork>();
+            if (player != null)
+                player.TakeDamageServerRpc(10);
         }
     }
 }

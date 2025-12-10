@@ -77,19 +77,10 @@ PrefabInstance:
       addedObject: {fileID: 8977776938726740789}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8188237556170233557}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7621028129922747005}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2015909103921310231}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 312664998801585462}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4574678905906751440}
   m_SourcePrefab: {fileID: 100100000, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
 --- !u!1 &3465156658129354409 stripped
 GameObject:
@@ -121,29 +112,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!136 &8188237556170233557
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465156658129354409}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.4929888
-  m_Height: 3.6279142
-  m_Direction: 1
-  m_Center: {x: 0.0018606734, y: 0.020796878, z: 0.01000367}
 --- !u!65 &7621028129922747005
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -159,7 +127,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -211,47 +179,3 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!54 &312664998801585462
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465156658129354409}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!114 &4574678905906751440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465156658129354409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1

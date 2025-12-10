@@ -11,11 +11,12 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float jumpForce = 5f;
 
-    [Header("Step")]
-    [SerializeField] private GameObject stepRayUpper;
-    [SerializeField] private GameObject stepRayLower;
-    [SerializeField] private float stepHeight = 0.4f;
+    [Header("Step (config)")]
+	[SerializeField] private Transform stepRayLower; 
+	[SerializeField] private Transform stepRayUpper;
+    [SerializeField] private float maxStepHeight = 0.4f;
     [SerializeField] private float stepSmooth = 0.1f;
+    [SerializeField] private float stepCheckDistance = 0.5f;
 
     [Header("Sprint")] 
     [SerializeField] private Slider sprintBarr;
@@ -33,9 +34,12 @@ public class PlayerMovement : NetworkBehaviour
     private Vector3 moveDirection;
     private Vector3 direction;
 
+
+    public bool canWalk = true;
     private bool isHiding = false;
     private float baseSpeed;
     private bool canSprint = true;
+    private bool isGrounded;
     
     private NetworkVariable<bool> isRunning = new NetworkVariable<bool>(
         false,
@@ -43,16 +47,19 @@ public class PlayerMovement : NetworkBehaviour
         NetworkVariableWritePermission.Server
         );
 
+    
+    private bool CanMove()
+    {
+        return canWalk && !isHiding;
+    }
 
     private void Awake()
     {
-        stepRayUpper.transform.position = new Vector3(stepRayUpper.transform.position.x, stepHeight,
-            stepRayUpper.transform.position.z);
-		if(sprintBarr != null)
-		{
-        	sprintBarr.maxValue = sprintBarrValue;
-        	sprintBarr.value = sprintBarr.maxValue;
-		}
+        if (sprintBarr != null)
+        {
+            sprintBarr.maxValue = sprintBarrValue;
+            sprintBarr.value = sprintBarr.maxValue;
+        }
     }
 
     private void Start()
@@ -74,6 +81,10 @@ public class PlayerMovement : NetworkBehaviour
         if (!IsOwner) return;
         MoveInput();
         Sprint();
+        if (Input.GetMouseButtonDown(0) && canWalk)
+        {
+            AttackServerRpc();
+        }
     }
 
     private void FixedUpdate()
@@ -90,9 +101,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void MoveInput()
     {
-        if (isHiding)
+        if (isHiding || !canWalk)
             return;
-
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
@@ -107,15 +117,15 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Move()
     {
-        
         Vector3 currentVel = rb.linearVelocity;
-        if (isHiding)
+        if (isHiding || !canWalk)
         {
             rb.linearVelocity = new Vector3(0f , rb.linearVelocity.y, 0f);  
             return;
         }
         if (direction.magnitude > 0.1f)
         {
+            UpdateAnimator(true);
             Vector3 moveDir = transform.TransformDirection(direction);
             rb.linearVelocity = new Vector3(
                 moveDir.x * moveSpeed,
@@ -194,38 +204,36 @@ public class PlayerMovement : NetworkBehaviour
     {
         isRunning.Value = running;
     }
+
+    [ServerRpc]
+    private void AttackServerRpc()
+    {
+        PlaySlashClientRpc();
+    }
     
+    [ClientRpc]
+    private void PlaySlashClientRpc()
+    {
+        if (!canWalk) return;
+        if (ar == null) return;
+        canWalk = false;
+        ar.SetTrigger("Slash");
+    }
+
     void stepClimb()
     {
+        if (direction.magnitude <= 0.1f)
+            return;
+
         RaycastHit hitLower;
-        if (Physics.Raycast(stepRayLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.1f))
+        if (Physics.Raycast(stepRayLower.position, transform.forward, out hitLower, stepCheckDistance))
         {
             RaycastHit hitUpper;
-            if (!Physics.Raycast(stepRayUpper.transform.position, transform.TransformDirection(Vector3.forward), out hitUpper, 0.2f))
+            if (!Physics.Raycast(stepRayUpper.position, transform.forward, out hitUpper, stepCheckDistance))
             {
-                rb.position -= new Vector3(0f, -stepSmooth * Time.deltaTime, 0f);
-            }
-        }
-
-        RaycastHit hitLower45;
-        if (Physics.Raycast(stepRayLower.transform.position, transform.TransformDirection(1.5f,0,1), out hitLower45, 0.1f))
-        {
-
-            RaycastHit hitUpper45;
-            if (!Physics.Raycast(stepRayUpper.transform.position, transform.TransformDirection(1.5f,0,1), out hitUpper45, 0.2f))
-            {
-                rb.position -= new Vector3(0f, -stepSmooth * Time.deltaTime, 0f);
-            }
-        }
-
-        RaycastHit hitLowerMinus45;
-        if (Physics.Raycast(stepRayLower.transform.position, transform.TransformDirection(-1.5f,0,1), out hitLowerMinus45, 0.1f))
-        {
-
-            RaycastHit hitUpperMinus45;
-            if (!Physics.Raycast(stepRayUpper.transform.position, transform.TransformDirection(-1.5f,0,1), out hitUpperMinus45, 0.2f))
-            {
-                rb.position -= new Vector3(0f, -stepSmooth * Time.deltaTime, 0f);
+                rb.position += new Vector3(0f, stepSmooth, 0f);
+                Debug.DrawRay(stepRayLower.position, transform.forward * stepCheckDistance, Color.red);
+                Debug.DrawRay(stepRayUpper.position, transform.forward * stepCheckDistance, Color.green);
             }
         }
     }

@@ -26,9 +26,8 @@ public class Clock : MonoBehaviour
         elapsedTime += Time.deltaTime;
         
         UpdateTimerDisplay();
-        Debug.Log(elapsedTime);
         SetWinner();
-        if (elapsedTime >= 10)
+        if (elapsedTime >= 2)
             WaitHiding();
     }
 
@@ -77,7 +76,7 @@ public class Clock : MonoBehaviour
 
     private void SetWinner()
     {
-        if (elapsedTime >= 120 )
+        if (elapsedTime >= 600 )
         {
             hidersWin_UI.SetActive(true);
         }

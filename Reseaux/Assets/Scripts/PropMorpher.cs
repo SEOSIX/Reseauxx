@@ -262,30 +262,34 @@ public class PropMorpher : NetworkBehaviour
 
     private void CopyCollider(Collider source)
     {
-        foreach (var old in GetComponentsInChildren<Collider>())
+        Transform meshTransform = GetComponentInChildren<MeshFilter>().transform;
+        
+        foreach (var old in meshTransform.GetComponents<Collider>())
             Destroy(old);
 
         if (source is BoxCollider box)
         {
-            var newCol = gameObject.AddComponent<BoxCollider>();
+            var newCol = meshTransform.gameObject.AddComponent<BoxCollider>();
             newCol.center = box.center;
             newCol.size = box.size;
         }
         else if (source is SphereCollider sphere)
         {
-            var newCol = gameObject.AddComponent<SphereCollider>();
+            var newCol = meshTransform.gameObject.AddComponent<SphereCollider>();
             newCol.center = sphere.center;
             newCol.radius = sphere.radius;
         }
         else if (source is CapsuleCollider capsule)
         {
-            var newCol = gameObject.AddComponent<CapsuleCollider>();
+            var newCol = meshTransform.gameObject.AddComponent<CapsuleCollider>();
             newCol.center = capsule.center;
             newCol.radius = capsule.radius;
+            newCol.height = capsule.height;
+            newCol.direction = capsule.direction;
         }
         else if (source is MeshCollider meshCollider)
         {
-            var newCol = gameObject.AddComponent<MeshCollider>();
+            var newCol = meshTransform.gameObject.AddComponent<MeshCollider>();
             newCol.convex = true;
             newCol.sharedMesh = meshCollider.sharedMesh;
         }

@@ -104,6 +104,7 @@ public class PlayerNetwork : NetworkBehaviour
     private IEnumerator ServerClockLoop() 
     {
         clockRunning = true;
+		Clock.instance.StartClock();
         while (clockRunning)
         {
             elapsedTime.Value += Time.deltaTime;
@@ -142,7 +143,7 @@ public class PlayerNetwork : NetworkBehaviour
     {
         DesactivateColliderForOthersClientRpc();
 
-        GameObject explosion = Instantiate(EXPLOSION, transform.position, transform.rotation.normalized);
+        GameObject explosion = Instantiate(EXPLOSION, transform.position, transform.rotation * Quaternion.identity);
         var netObj = explosion.GetComponent<NetworkObject>();
         if (netObj != null)
             netObj.Spawn();
@@ -207,8 +208,8 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (isSeaker)
         {
-            cam.height = 1.06f;
-            cam.distance = 2.2f;
+            cam.height = 1.33f;
+            cam.distance = 3.33f;
             Camera.main.fieldOfView = 80;
         }
         else

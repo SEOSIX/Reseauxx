@@ -445,7 +445,7 @@ Transform:
   m_GameObject: {fileID: 3775733908056798937}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.989, z: 0}
+  m_LocalPosition: {x: 0, y: -0.885, z: 0.479}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -683,7 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 345941367
+  GlobalObjectIdHash: 2815686448
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -795,12 +795,13 @@ MonoBehaviour:
   moveSpeed: 6.35
   sprintSpeed: 9.32
   jumpForce: 5
-  stepRayUpper: {fileID: 7127516929410639069}
-  stepRayLower: {fileID: 3775733908056798937}
-  stepHeight: -0.878
-  stepSmooth: 0.02
+  stepRayLower: {fileID: 4572447715487836075}
+  stepRayUpper: {fileID: 3918232009656726783}
+  maxStepHeight: 0
+  stepSmooth: 0.1
+  stepCheckDistance: 0.5
   sprintBarr: {fileID: 1485536969945906128}
-  sprintBarrValue: 100
+  sprintBarrValue: 60
   minToSprint: 0
   lookSensitivity: 2
   rotationSmoothness: 10
@@ -839,7 +840,7 @@ MonoBehaviour:
   - {fileID: -7016030322194801813, guid: 5323e777062eb6147bae786f2667accd, type: 3}
   - {fileID: 3979670956285267466, guid: 92e878af4beab93499a4882a0719e28e, type: 3}
   - {fileID: -4552762029210940331, guid: 5a98752ece3c548459bcbb363f195b37, type: 3}
-  lifeValues: 14000000190000000f0000000a000000c80000003c000000
+  lifeValues: 14000000190000000f0000000a000000280000003c000000
   avaiablesMaterials:
   - {fileID: 2100000, guid: aeee7071bea0a4c478b4fea5933c5f79, type: 2}
   - {fileID: -3968324973065727883, guid: 9c2856f160064d74dbe09550d9c7cf35, type: 3}
@@ -1228,7 +1229,7 @@ Transform:
   m_GameObject: {fileID: 7127516929410639069}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.826, z: 0.876}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

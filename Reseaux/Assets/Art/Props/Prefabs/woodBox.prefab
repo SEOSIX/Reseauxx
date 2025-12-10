@@ -77,19 +77,10 @@ PrefabInstance:
       addedObject: {fileID: 398387718410047038}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b05ea84d42234f4082fa976ed646390, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6338457315189990051}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b05ea84d42234f4082fa976ed646390, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7614786683538786137}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b05ea84d42234f4082fa976ed646390, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3358798683694968585}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b05ea84d42234f4082fa976ed646390, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6224007714382826030}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b05ea84d42234f4082fa976ed646390, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8578262548529855961}
+      addedObject: {fileID: 8248571894208920837}
   m_SourcePrefab: {fileID: 100100000, guid: 1b05ea84d42234f4082fa976ed646390, type: 3}
 --- !u!1 &7164314731669851737 stripped
 GameObject:
@@ -121,50 +112,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!136 &6338457315189990051
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7164314731669851737}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.57
-  m_Height: 1.5
-  m_Direction: 1
-  m_Center: {x: -0.0006813705, y: -0.0005455315, z: 0.0022924244}
---- !u!65 &7614786683538786137
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7164314731669851737}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.5, y: 1.5, z: 1.5}
-  m_Center: {x: -0.0006813705, y: -0.0005455315, z: 0.0022924244}
 --- !u!114 &3358798683694968585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,47 +158,24 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!54 &6224007714382826030
-Rigidbody:
+--- !u!65 &8248571894208920837
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7164314731669851737}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 96
-  m_CollisionDetection: 0
---- !u!114 &8578262548529855961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7164314731669851737}
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
+  m_Center: {x: -0.0006813705, y: -0.0005455315, z: 0.0022924244}
