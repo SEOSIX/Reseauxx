@@ -144,7 +144,7 @@ public class PropMorpher : NetworkBehaviour
         int meshIndex = System.Array.IndexOf(availableMeshes, currentMesh);
         if (meshIndex < 0) meshIndex = 0;
 
-        DuplicateMeshClientRpc(meshIndex, transform.position, transform.rotation);
+        DuplicateMeshClientRpc(meshIndex, transform.localPosition, transform.rotation, transform.localScale);
     }
 
     [ClientRpc]
@@ -168,7 +168,7 @@ public class PropMorpher : NetworkBehaviour
     }
     
     [ClientRpc]
-    private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot)
+    private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot, Vector3 scale)
     {
         GameObject copy = new GameObject("MeshCopy");
 
@@ -179,6 +179,7 @@ public class PropMorpher : NetworkBehaviour
         mr.material = avaiablesMaterials[meshIndex];
 
         copy.transform.SetPositionAndRotation(pos, rot);
+        copy.transform.localScale = scale;
         copy.isStatic = true;
 
         copies.Add(copy);

@@ -683,7 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2815686448
+  GlobalObjectIdHash: 345941367
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -806,6 +806,7 @@ MonoBehaviour:
   lookSensitivity: 2
   rotationSmoothness: 10
   ar: {fileID: 0}
+  canWalk: 1
 --- !u!114 &-6338550848801938631
 MonoBehaviour:
   m_ObjectHideFlags: 0

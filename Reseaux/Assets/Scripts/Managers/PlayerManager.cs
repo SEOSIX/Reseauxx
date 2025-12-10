@@ -28,7 +28,13 @@ public class PlayerManager : NetworkBehaviour
             if (hidderUI != null)
                 hidderUI.SetActive(true);
         }
+
         AddHiddersToList();
+    }
+
+    private void Awake()
+    {
+        hidders = 0;
     }
 
     public void RegisterPlayer(PlayerNetwork player)
@@ -44,10 +50,8 @@ public class PlayerManager : NetworkBehaviour
         connectedPlayers.RemoveAll(p => p.OwnerClientId == clientId);
     }
     
-    public void AddHiddersToList()
+    private void AddHiddersToList()
     {
-        hidders = 0;
-
         foreach (var player in connectedPlayers)
         {
             if (player.CompareTag("Hidder"))

@@ -17,6 +17,7 @@ public class Clock : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        ResetClock();
     }
 
     private void Update()
@@ -79,6 +80,7 @@ public class Clock : MonoBehaviour
         if (elapsedTime >= 600 )
         {
             hidersWin_UI.SetActive(true);
+            StopClock();
         }
         else
             hidersWin_UI.SetActive(false);
