@@ -15,7 +15,7 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private GameObject EXPLOSION;
     
     [Header("Stats")]
-    [SerializeField] private float baseLife = 100f;
+    [SerializeField] private float baseLife = 10f;
 
     public PlayerManager playerManager;
     
@@ -214,7 +214,7 @@ public class PlayerNetwork : NetworkBehaviour
         }
         else
         {
-            cam.height = 2.57f;
+            cam.height = 1.57f;
             cam.distance = 3.24f;
             Camera.main.fieldOfView = 80;
         }

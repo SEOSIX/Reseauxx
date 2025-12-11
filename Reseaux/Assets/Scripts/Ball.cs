@@ -4,15 +4,14 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     [SerializeField] private float lifeTime = 5f;
-
-    [SerializeField] private PlayerNetwork player;
+    [SerializeField] private PlayerNetwork zaza;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Hidder"))
+        if (other.CompareTag("Hidder"))
         {
-            if (player != null)
-                player.TakeDamageServerRpc(10);
+            if (zaza != null)
+                zaza.TakeDamageServerRpc(10);
         }
     }
 }

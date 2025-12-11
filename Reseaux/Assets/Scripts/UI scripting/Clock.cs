@@ -77,7 +77,7 @@ public class Clock : MonoBehaviour
 
     private void SetWinner()
     {
-        if (elapsedTime >= 600 )
+        if (elapsedTime >= 420 )
         {
             hidersWin_UI.SetActive(true);
             StopClock();

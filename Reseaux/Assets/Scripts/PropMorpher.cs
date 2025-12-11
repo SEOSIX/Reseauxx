@@ -142,9 +142,10 @@ public class PropMorpher : NetworkBehaviour
 
         var currentMesh = mf.sharedMesh;
         int meshIndex = System.Array.IndexOf(availableMeshes, currentMesh);
-        if (meshIndex < 0) meshIndex = 0;
 
-        DuplicateMeshClientRpc(meshIndex, transform.localPosition, transform.rotation, transform.localScale);
+        Vector3 position = transform.localPosition;
+        if (meshIndex < 0) meshIndex = 0;
+        DuplicateMeshClientRpc(meshIndex, position, transform.rotation, transform.localScale);
     }
 
     [ClientRpc]
@@ -177,7 +178,7 @@ public class PropMorpher : NetworkBehaviour
 
         var mr = copy.AddComponent<MeshRenderer>();
         mr.material = avaiablesMaterials[meshIndex];
-
+        
         copy.transform.SetPositionAndRotation(pos, rot);
         copy.transform.localScale = scale;
         copy.isStatic = true;
@@ -210,13 +211,10 @@ public class PropMorpher : NetworkBehaviour
     if (lifeManager == null) return;
     
     int newLife = lifeValues[index];
-        lifeManager.playerSlider.maxValue = lifeValues[index]; 
-        lifeManager.SetLife(lifeValues[index]);        
-        lifeManager.SetMaxLife(lifeValues[index]);
-        if (IsOwner)
-        {
-            GetComponent<PlayerNetwork>().SetLifeServerRpc(newLife);
-        }
+    if (IsOwner)
+    {
+        GetComponent<PlayerNetwork>().SetLifeServerRpc(newLife);
+    }  
     }
 
 

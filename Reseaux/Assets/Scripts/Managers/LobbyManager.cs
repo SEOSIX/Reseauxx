@@ -48,7 +48,7 @@ public class LobbyManager : MonoBehaviour
     await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
 
-    playerName = "Mickael" + Random.Range(10, 99);
+    playerName = "Link" + Random.Range(10, 99);
     Debug.Log("Player Name: " + playerName);
   }
 
@@ -125,7 +125,7 @@ public class LobbyManager : MonoBehaviour
     try
     {
       string lobbyName  = "MyLobby";
-      int    maxPlayers = 4;
+      int    maxPlayers = 6;
 
 
       CreateLobbyOptions createLobbyOptions = new()

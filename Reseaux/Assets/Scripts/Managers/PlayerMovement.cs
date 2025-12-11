@@ -11,13 +11,6 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float jumpForce = 5f;
 
-    [Header("Step (config)")]
-	[SerializeField] private Transform stepRayLower; 
-	[SerializeField] private Transform stepRayUpper;
-    [SerializeField] private float maxStepHeight = 0.4f;
-    [SerializeField] private float stepSmooth = 0.1f;
-    [SerializeField] private float stepCheckDistance = 0.5f;
-
     [Header("Sprint")] 
     [SerializeField] private Slider sprintBarr;
     [SerializeField] private float sprintBarrValue;
@@ -96,7 +89,6 @@ public class PlayerMovement : NetworkBehaviour
         {
             isHiding = !isHiding;
         }
-        stepClimb();
     }
 
     private void MoveInput()
@@ -218,23 +210,5 @@ public class PlayerMovement : NetworkBehaviour
         if (ar == null) return;
         canWalk = false;
         ar.SetTrigger("Slash");
-    }
-
-    void stepClimb()
-    {
-        if (direction.magnitude <= 0.1f)
-            return;
-
-        RaycastHit hitLower;
-        if (Physics.Raycast(stepRayLower.position, transform.forward, out hitLower, stepCheckDistance))
-        {
-            RaycastHit hitUpper;
-            if (!Physics.Raycast(stepRayUpper.position, transform.forward, out hitUpper, stepCheckDistance))
-            {
-                rb.position += new Vector3(0f, stepSmooth, 0f);
-                Debug.DrawRay(stepRayLower.position, transform.forward * stepCheckDistance, Color.red);
-                Debug.DrawRay(stepRayUpper.position, transform.forward * stepCheckDistance, Color.green);
-            }
-        }
     }
 }
