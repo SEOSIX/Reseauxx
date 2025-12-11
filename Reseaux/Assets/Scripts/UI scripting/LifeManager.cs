@@ -48,6 +48,7 @@ public class LifeManager : MonoBehaviour
             propMorpher.enabled = false;
             canvasPlayer.enabled = false;
             playerNet.DestroyColliderServerRpc();
+            NetwordkSetup.instance.CheckNumberHidder();
         }
     }
 }

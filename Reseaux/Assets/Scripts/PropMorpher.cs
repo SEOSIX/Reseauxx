@@ -142,10 +142,9 @@ public class PropMorpher : NetworkBehaviour
 
         var currentMesh = mf.sharedMesh;
         int meshIndex = System.Array.IndexOf(availableMeshes, currentMesh);
-
-        Vector3 position = transform.localPosition;
         if (meshIndex < 0) meshIndex = 0;
-        DuplicateMeshClientRpc(meshIndex, position, transform.rotation, transform.localScale);
+
+        DuplicateMeshClientRpc(meshIndex, transform.position, transform.rotation);
     }
 
     [ClientRpc]
@@ -169,7 +168,7 @@ public class PropMorpher : NetworkBehaviour
     }
     
     [ClientRpc]
-    private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot, Vector3 scale)
+    private void DuplicateMeshClientRpc(int meshIndex, Vector3 pos, Quaternion rot)
     {
         GameObject copy = new GameObject("MeshCopy");
 
@@ -178,9 +177,8 @@ public class PropMorpher : NetworkBehaviour
 
         var mr = copy.AddComponent<MeshRenderer>();
         mr.material = avaiablesMaterials[meshIndex];
-        
+
         copy.transform.SetPositionAndRotation(pos, rot);
-        copy.transform.localScale = scale;
         copy.isStatic = true;
 
         copies.Add(copy);
@@ -211,10 +209,13 @@ public class PropMorpher : NetworkBehaviour
     if (lifeManager == null) return;
     
     int newLife = lifeValues[index];
-    if (IsOwner)
-    {
-        GetComponent<PlayerNetwork>().SetLifeServerRpc(newLife);
-    }  
+        lifeManager.playerSlider.maxValue = lifeValues[index]; 
+        lifeManager.SetLife(lifeValues[index]);        
+        lifeManager.SetMaxLife(lifeValues[index]);
+        if (IsOwner)
+        {
+            GetComponent<PlayerNetwork>().SetLifeServerRpc(newLife);
+        }
     }
 
 
@@ -261,34 +262,30 @@ public class PropMorpher : NetworkBehaviour
 
     private void CopyCollider(Collider source)
     {
-        Transform meshTransform = GetComponentInChildren<MeshFilter>().transform;
-        
-        foreach (var old in meshTransform.GetComponents<Collider>())
+        foreach (var old in GetComponentsInChildren<Collider>())
             Destroy(old);
 
         if (source is BoxCollider box)
         {
-            var newCol = meshTransform.gameObject.AddComponent<BoxCollider>();
+            var newCol = gameObject.AddComponent<BoxCollider>();
             newCol.center = box.center;
             newCol.size = box.size;
         }
         else if (source is SphereCollider sphere)
         {
-            var newCol = meshTransform.gameObject.AddComponent<SphereCollider>();
+            var newCol = gameObject.AddComponent<SphereCollider>();
             newCol.center = sphere.center;
             newCol.radius = sphere.radius;
         }
         else if (source is CapsuleCollider capsule)
         {
-            var newCol = meshTransform.gameObject.AddComponent<CapsuleCollider>();
+            var newCol = gameObject.AddComponent<CapsuleCollider>();
             newCol.center = capsule.center;
             newCol.radius = capsule.radius;
-            newCol.height = capsule.height;
-            newCol.direction = capsule.direction;
         }
         else if (source is MeshCollider meshCollider)
         {
-            var newCol = meshTransform.gameObject.AddComponent<MeshCollider>();
+            var newCol = gameObject.AddComponent<MeshCollider>();
             newCol.convex = true;
             newCol.sharedMesh = meshCollider.sharedMesh;
         }

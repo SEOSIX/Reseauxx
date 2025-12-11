@@ -6,14 +6,22 @@ using Random = UnityEngine.Random;
 
 public class NetwordkSetup : NetworkBehaviour
 {
+    public static NetwordkSetup instance { get; private set; }
     public GameObject Hidder;
     public GameObject Seaker;
 
+    public GameObject SeakerWons;
     public Transform spawnerSeaker;
     public Transform spawnerHider;
 
     
     private int seekerAvailiables = 1;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     public void Spawned()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
@@ -52,6 +60,19 @@ public class NetwordkSetup : NetworkBehaviour
             LifeManager.instance.playerSlider.gameObject.SetActive(true);
             LifeManager.instance.playerSlider.value = LifeManager.instance.playerSlider.maxValue;
             Cursor.instance.cursorMain.SetActive(true);
+        }
+    }
+
+    public void CheckNumberHidder()
+    {
+        if (PlayerManager.hidders <= 0)
+        {
+            SeakerWons.SetActive(true);
+            Debug.Log("A pu");
+        }
+        else
+        {
+            return;
         }
     }
 }

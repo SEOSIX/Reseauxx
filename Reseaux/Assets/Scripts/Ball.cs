@@ -1,19 +1,23 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+namespace DefaultNamespace
 {
-    [SerializeField] private float lifeTime = 5f;
-    [SerializeField] private PlayerNetwork zaza;
-
-    private void OnTriggerEnter(Collider other)
+    public class Ball : NetworkBehaviour
     {
-        if (other.CompareTag("Hidder"))
+        private void OnTriggerEnter(Collider other)
         {
-            if (zaza != null)
+            if (other.gameObject == gameObject)
+                return;
+            if (other.gameObject.CompareTag("Hidder"))
             {
-                zaza.TakeDamageServerRpc(10);
-                LifeManager.instance.CheckLifePlayer();
+                var playerNet = other.gameObject.GetComponent<PlayerNetwork>();
+                if (playerNet != null && playerNet.IsSpawned)
+                {
+                    playerNet.TakeDamageServerRpc(10);
+                    LifeManager.instance.CheckLifePlayer();
+                }
             }
         }
     }

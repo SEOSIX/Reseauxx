@@ -12,10 +12,9 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private PropMorpher propMorpher;
     [SerializeField] private FollowCamera cameraFollow;
-    [SerializeField] private GameObject EXPLOSION;
     
     [Header("Stats")]
-    [SerializeField] private float baseLife = 10f;
+    [SerializeField] private float baseLife = 100f;
 
     public PlayerManager playerManager;
     
@@ -95,18 +94,15 @@ public class PlayerNetwork : NetworkBehaviour
         if (IsOwner && LifeManager.instance != null)
         {
             LifeManager.instance.SetLife(newLife);
-            LifeManager.instance.CheckLifePlayer();
         }
     }
-    
-   
     
     private IEnumerator ServerClockLoop() 
     {
         clockRunning = true;
-		Clock.instance.StartClock();
         while (clockRunning)
         {
+            Clock.instance.StartClock();
             elapsedTime.Value += Time.deltaTime;
             yield return null;
         }
@@ -142,11 +138,6 @@ public class PlayerNetwork : NetworkBehaviour
     public void DestroyColliderServerRpc()
     {
         DesactivateColliderForOthersClientRpc();
-
-        GameObject explosion = Instantiate(EXPLOSION, transform.position, transform.rotation * Quaternion.identity);
-        var netObj = explosion.GetComponent<NetworkObject>();
-        if (netObj != null)
-            netObj.Spawn();
     }
     
     
@@ -178,19 +169,15 @@ public class PlayerNetwork : NetworkBehaviour
 
                 if (meshRenderer != null)
                     meshRenderer.enabled = false;
-                if (meshFilter != null)
-                {
-                    meshFilter.sharedMesh = null;
-                }
             }
     }
     
     [ClientRpc]
     private void DesactivateColliderForOthersClientRpc()
     {
-        if(IsOwner)
+        if (IsOwner)
             return;
-        
+
         Collider col = GetComponentInChildren<Collider>();
         if (col != null)
             Destroy(col);
@@ -208,13 +195,13 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (isSeaker)
         {
-            cam.height = 1.33f;
-            cam.distance = 3.33f;
+            cam.height = 1.06f;
+            cam.distance = 2.2f;
             Camera.main.fieldOfView = 80;
         }
         else
         {
-            cam.height = 1.57f;
+            cam.height = 1.49f;
             cam.distance = 3.24f;
             Camera.main.fieldOfView = 80;
         }
