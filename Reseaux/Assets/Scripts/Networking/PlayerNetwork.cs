@@ -166,7 +166,7 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (IsOwner)
         {
-            var color = playerRenderer.material.color;
+            Color color = playerRenderer.material.color;
             color.a = 0.2f;
             playerRenderer.material.color = color;
         }
