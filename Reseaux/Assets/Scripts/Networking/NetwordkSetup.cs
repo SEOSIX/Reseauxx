@@ -51,7 +51,6 @@ public class NetwordkSetup : NetworkBehaviour
             (prefabToSpawn == Seaker ? spawnerSeaker : spawnerHider).position,
             Quaternion.identity
         );
-
         playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
         
         

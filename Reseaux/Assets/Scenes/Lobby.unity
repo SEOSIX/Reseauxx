@@ -9528,6 +9528,10 @@ PrefabInstance:
       value: 1668827243
       objectReference: {fileID: 0}
     - target: {fileID: 4257694642418450046, guid: a8320ce2304d8e74885860898015b5b9, type: 3}
+      propertyPath: SeakerWons
+      value: 
+      objectReference: {fileID: 151670549}
+    - target: {fileID: 4257694642418450046, guid: a8320ce2304d8e74885860898015b5b9, type: 3}
       propertyPath: spawnerHider
       value: 
       objectReference: {fileID: 516147105}

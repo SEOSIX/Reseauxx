@@ -12,7 +12,9 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private PropMorpher propMorpher;
     [SerializeField] private FollowCamera cameraFollow;
-    
+
+
+    [SerializeField] private ParticleSystem EXPLOSION;
     [Header("Stats")]
     [SerializeField] private float baseLife = 100f;
 
@@ -138,6 +140,12 @@ public class PlayerNetwork : NetworkBehaviour
     public void DestroyColliderServerRpc()
     {
         DesactivateColliderForOthersClientRpc();
+        ParticleSystem explosion = Instantiate(EXPLOSION, transform.position, transform.rotation);
+        GameObject explosionObj = explosion.gameObject;
+        var netObj = explosionObj.GetComponent<NetworkObject>();
+        if (netObj != null)
+            netObj.Spawn();
+        explosion.Play();
     }
     
     
@@ -156,28 +164,32 @@ public class PlayerNetwork : NetworkBehaviour
     [ClientRpc]
     public void DesactvatePlayerDeadClientRpc()
     {
-            if (IsOwner)
-            {
-                var color = playerRenderer.material.color;
-                color.a = 0.2f;
-                playerRenderer.material.color = color;
-            }
-            else
-            {
-                MeshRenderer meshRenderer = playerRenderer.GetComponent<MeshRenderer>();
-                MeshFilter meshFilter = playerRenderer.GetComponent<MeshFilter>();
+        if (IsOwner)
+        {
+            var color = playerRenderer.material.color;
+            color.a = 0.2f;
+            playerRenderer.material.color = color;
+        }
+        else
+        {
+            MeshRenderer meshRenderer = playerRenderer.GetComponent<MeshRenderer>();
+            MeshFilter meshFilter = playerRenderer.GetComponent<MeshFilter>();
 
-                if (meshRenderer != null)
-                    meshRenderer.enabled = false;
+            if (meshRenderer != null)
+                meshRenderer.enabled = false;
+            if (meshFilter != null)
+            {
+                meshFilter.sharedMesh = null;
             }
+        }
     }
     
     [ClientRpc]
     private void DesactivateColliderForOthersClientRpc()
     {
-        if (IsOwner)
+        if(IsOwner)
             return;
-
+        
         Collider col = GetComponentInChildren<Collider>();
         if (col != null)
             Destroy(col);
