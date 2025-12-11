@@ -28,7 +28,7 @@ public class Clock : MonoBehaviour
         
         UpdateTimerDisplay();
         SetWinner();
-        if (elapsedTime >= 2)
+        if (elapsedTime >= 30)
             WaitHiding();
     }
 
@@ -77,17 +77,32 @@ public class Clock : MonoBehaviour
 
     private void SetWinner()
     {
-        if (elapsedTime >= 420 )
+        if (elapsedTime >= 4)
         {
-            hidersWin_UI.SetActive(true);
+            ShowHidersWinUIClientRpc();
             StopClock();
         }
         else
-            hidersWin_UI.SetActive(false);
+        {
+            HideHidersWinUIClientRpc();
+        }
     }
 
     private void WaitHiding()
     {
         cubeSeaker.SetActive(false);
+    }
+    
+    
+    [ClientRpc]
+    private void ShowHidersWinUIClientRpc()
+    {
+        hidersWin_UI.SetActive(true);
+    }
+
+    [ClientRpc]
+    private void HideHidersWinUIClientRpc()
+    {
+        hidersWin_UI.SetActive(false);
     }
 }

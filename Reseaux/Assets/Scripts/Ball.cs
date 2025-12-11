@@ -16,7 +16,6 @@ namespace DefaultNamespace
                 if (playerNet != null && playerNet.IsSpawned)
                 {
                     playerNet.TakeDamageServerRpc(10);
-                    LifeManager.instance.CheckLifePlayer();
                 }
             }
         }

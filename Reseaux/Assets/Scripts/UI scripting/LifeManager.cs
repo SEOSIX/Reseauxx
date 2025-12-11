@@ -13,6 +13,8 @@ public class LifeManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI lifeText;
     [SerializeField] private PropMorpher propMorpher;
     [SerializeField] private Canvas canvasPlayer;
+    
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -31,24 +33,24 @@ public class LifeManager : MonoBehaviour
     public void SetLife(int value)
     {
         lifeValue = value;
-    
+
         if (playerSlider != null)
             playerSlider.value = lifeValue;
 
         if (lifeText != null)
             lifeText.text = $"{lifeValue} / {playerSlider.maxValue}";
+        if (!isDead && lifeValue <= 0)
+            HandlePlayerDeath();
     }
-    public void CheckLifePlayer()
+
+    private void HandlePlayerDeath()
     {
-        if (playerSlider.value <= Mathf.Abs(0f))
-        {
-            var playerNet = gameObject.GetComponent<PlayerNetwork>();
-            Debug.Log(PlayerManager.hidders);
-            PlayerManager.hidders -= 1;
-            propMorpher.enabled = false;
-            canvasPlayer.enabled = false;
-            playerNet.DestroyColliderServerRpc();
-            NetwordkSetup.instance.CheckNumberHidder();
-        }
+        isDead = true;
+        var playerNet = gameObject.GetComponent<PlayerNetwork>();
+        PlayerManager.hidders -= 1;
+        propMorpher.enabled = false;
+        canvasPlayer.enabled = false;
+        playerNet.DestroyColliderServerRpc();
+        NetwordkSetup.instance.CheckNumberHidder();
     }
 }

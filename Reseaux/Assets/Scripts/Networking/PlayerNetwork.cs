@@ -89,6 +89,8 @@ public class PlayerNetwork : NetworkBehaviour
                 LifeManager.instance.SetLife(playerLife.Value);
             }
         }
+
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     }
    
     private void OnLifeChanged(int oldLife, int newLife)
@@ -172,8 +174,8 @@ public class PlayerNetwork : NetworkBehaviour
         }
         else
         {
-            MeshRenderer meshRenderer = playerRenderer.GetComponentInChildren<MeshRenderer>();
-            MeshFilter meshFilter = playerRenderer.GetComponentInChildren<MeshFilter>();
+            MeshRenderer meshRenderer = playerRenderer.GetComponent<MeshRenderer>();
+            MeshFilter meshFilter = playerRenderer.GetComponent<MeshFilter>();
 
             if (meshRenderer != null)
                 meshRenderer.enabled = false;

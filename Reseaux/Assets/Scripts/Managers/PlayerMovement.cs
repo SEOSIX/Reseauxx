@@ -155,7 +155,7 @@ public class PlayerMovement : NetworkBehaviour
         if (sprintBarr.value <= 0.01f)
             canSprint = false;
 
-        if (canSprint && sprintBarr.value >= minToSprint)
+        if (!canSprint && sprintBarr.value >= minToSprint)
             canSprint = true;
 
         bool isTryingToSprint = Input.GetKey(KeyCode.LeftShift);

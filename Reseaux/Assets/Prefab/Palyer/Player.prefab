@@ -658,8 +658,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   ShowTopMostFoldoutHeaderGroup: 1
-  moveSpeed: 6.35
-  sprintSpeed: 9.32
+  moveSpeed: 7.16
+  sprintSpeed: 8.7
   jumpForce: 5
   sprintBarr: {fileID: 5638976942842836680}
   sprintBarrValue: 30

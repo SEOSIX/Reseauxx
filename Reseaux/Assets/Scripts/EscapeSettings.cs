@@ -11,6 +11,7 @@ public class EscapeSettings : MonoBehaviour
         {
             isPressed = !isPressed;
             target.SetActive(isPressed);
+            UnityEngine.Cursor.lockState = CursorLockMode.Confined;
         }
     }
 }

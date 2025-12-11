@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1668827243
+  GlobalObjectIdHash: 3247004936
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -73,5 +73,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   Hidder: {fileID: 4553876211116538519, guid: 7c52dafaed12d4242acacd165011e31e, type: 3}
   Seaker: {fileID: 4553876211116538519, guid: 7f4c18e833b554a4e94d834dcb471766, type: 3}
-  spawnerSeaker: {fileID: 0}
-  spawnerHider: {fileID: 0}
+  SeakerWons: {fileID: 8139173271664265968, guid: 7f25b0067831d3940930c117330f3309, type: 3}
+  spawnerSeaker: {fileID: 6133101168543242304, guid: 9245bd6452daea2428523f0e46fe1538, type: 3}
+  spawnerHider: {fileID: 4279479814959701440, guid: f33769d569b91c24a844772557a2f474, type: 3}
