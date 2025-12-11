@@ -172,8 +172,8 @@ public class PlayerNetwork : NetworkBehaviour
         }
         else
         {
-            MeshRenderer meshRenderer = playerRenderer.GetComponent<MeshRenderer>();
-            MeshFilter meshFilter = playerRenderer.GetComponent<MeshFilter>();
+            MeshRenderer meshRenderer = playerRenderer.GetComponentInChildren<MeshRenderer>();
+            MeshFilter meshFilter = playerRenderer.GetComponentInChildren<MeshFilter>();
 
             if (meshRenderer != null)
                 meshRenderer.enabled = false;
