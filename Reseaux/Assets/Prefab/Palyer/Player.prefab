@@ -579,7 +579,7 @@ MonoBehaviour:
   movement: {fileID: 8789104765449345330}
   propMorpher: {fileID: 8379445147967969899}
   cameraFollow: {fileID: 0}
-  EXPLOSION: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  EXPLOSION: {fileID: 7226888052703040407, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   baseLife: 13
   playerManager: {fileID: -6338550848801938631}
 --- !u!114 &-3446155525657064945

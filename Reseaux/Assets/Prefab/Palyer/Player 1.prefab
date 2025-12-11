@@ -181,7 +181,7 @@ MonoBehaviour:
   movement: {fileID: 0}
   propMorpher: {fileID: 0}
   cameraFollow: {fileID: 0}
-  EXPLOSION: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  EXPLOSION: {fileID: 7226888052703040407, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   baseLife: 100
   playerManager: {fileID: -6338550848801938631}
 --- !u!114 &-3446155525657064945
@@ -333,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e11ea37140448eb691c11d899cb08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ball
-  lifeTime: 5
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &8261234921684589523
 GameObject:
   m_ObjectHideFlags: 0
