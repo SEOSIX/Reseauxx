@@ -11,7 +11,10 @@ public class Ball : MonoBehaviour
         if (other.CompareTag("Hidder"))
         {
             if (zaza != null)
+            {
                 zaza.TakeDamageServerRpc(10);
+                LifeManager.instance.CheckLifePlayer();
+            }
         }
     }
 }
